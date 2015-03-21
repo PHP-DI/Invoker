@@ -1,0 +1,23 @@
+{
+    "name": "mnapoli/invoker",
+    "description": "Generic and extensible callable invoker",
+    "keywords": ["invoker", "dependency-injection", "dependency", "injection", "callable", "invoke"],
+    "license": "MIT",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Invoker\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Invoker\\Test\\": "tests/"
+        }
+    },
+    "require": {
+        "container-interop/container-interop": "~1.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.5"
+    }
+}
