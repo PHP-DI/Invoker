@@ -124,7 +124,7 @@ $invoker->call(['MyClass', 'myStaticMethod']);
 
 ### Parameter resolvers
 
-Extending the behavior of the `Invoker` is easy and is done by implementing a `ParameterResolver`:
+Extending the behavior of the `Invoker` is easy and is done by implementing a [`ParameterResolver`](https://github.com/mnapoli/Invoker/blob/master/src/ParameterResolver/ParameterResolver.php):
 
 ```php
 interface ParameterResolver
@@ -190,7 +190,7 @@ The fun starts to happen when we want to add support for many things:
 - dependency injection for type-hinted parameters
 - ...
 
-This is where we should use the `ParameterResolverChain`. This resolver implements the [Chain of responsibility](http://en.wikipedia.org/wiki/Chain-of-responsibility_pattern) design pattern.
+This is where we should use the [`ParameterResolverChain`](https://github.com/mnapoli/Invoker/blob/master/src/ParameterResolver/ParameterResolverChain.php). This resolver implements the [Chain of responsibility](http://en.wikipedia.org/wiki/Chain-of-responsibility_pattern) design pattern.
 
 For example the default chain is:
 
