@@ -232,3 +232,30 @@ $parameterResolver = new ParameterResolverChain([
 
 $invoker = new Invoker\Invoker($parameterResolver);
 ```
+
+### Built-in support for dependency injection
+
+Rather than have you re-implement support for dependency injection with different containers every time, this package ships with a `ContainerParameterResolver` that can work with any dependency injection container thanks to [container-interop](https://github.com/container-interop/container-interop).
+
+Using it is simple:
+
+```php
+// $container must be an instance of Interop\Container\ContainerInterface
+$container = ...
+
+$containerResolver = new ContainerParameterResolver($container);
+
+$invoker = new Invoker\Invoker;
+// Register it before all the other parameter resolvers
+$invoker->getParameterResolver()->unshiftResolver($containerResolver);
+```
+
+This parameter resolver will use the type-hints to look into the container:
+
+```php
+$invoker->call(function (Psr\Logger\LoggerInterface $logger) {
+    // ...
+});
+```
+
+In this example it will `->get('Psr\Logger\LoggerInterface')` from the container.
