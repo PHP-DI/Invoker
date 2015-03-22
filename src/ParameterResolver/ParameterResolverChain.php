@@ -78,7 +78,7 @@ class ParameterResolverChain implements ParameterResolver
                 throw new \RuntimeException(sprintf(
                     'Unable to invoke the callable because no value was given for parameter %d ($%s)',
                     $i + 1,
-                    $parameter->getName()
+                    $parameter->name
                 ));
             }
         }

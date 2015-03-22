@@ -38,8 +38,8 @@ class ContainerParameterResolver implements ParameterResolver
 
             $parameterClass = $parameter->getClass();
 
-            if ($parameterClass && $this->container->has($parameterClass->getName())) {
-                $resolvedParameters[$index] = $this->container->get($parameterClass->getName());
+            if ($parameterClass && $this->container->has($parameterClass->name)) {
+                $resolvedParameters[$index] = $this->container->get($parameterClass->name);
             }
         }
 

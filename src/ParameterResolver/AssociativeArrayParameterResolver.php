@@ -27,8 +27,8 @@ class AssociativeArrayParameterResolver implements ParameterResolver
                 continue;
             }
 
-            if (array_key_exists($parameter->getName(), $providedParameters)) {
-                $resolvedParameters[$index] = $providedParameters[$parameter->getName()];
+            if (array_key_exists($parameter->name, $providedParameters)) {
+                $resolvedParameters[$index] = $providedParameters[$parameter->name];
             }
         }
 
