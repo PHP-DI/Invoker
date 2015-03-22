@@ -80,7 +80,7 @@ $container->call(function (Logger $logger, EntityManager $em) {
 
 ### TL/DR
 
-In short, this library is meant to be a base building block for calling a function with named parameters and dependency injection.
+In short, this library is meant to be a base building block for calling a function with named parameters and/or dependency injection.
 
 ## Installation
 

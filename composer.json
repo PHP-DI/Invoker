@@ -2,6 +2,7 @@
     "name": "mnapoli/invoker",
     "description": "Generic and extensible callable invoker",
     "keywords": ["invoker", "dependency-injection", "dependency", "injection", "callable", "invoke"],
+    "homepage": "https://github.com/mnapoli/Invoker",
     "license": "MIT",
     "type": "library",
     "autoload": {
