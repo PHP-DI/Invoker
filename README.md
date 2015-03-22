@@ -203,7 +203,7 @@ $parameterResolver = new ParameterResolverChain([
 ]);
 ```
 
-It allows to support even the most weird use cases like:
+It allows to support even the weirdest use cases like:
 
 ```php
 $parameters = [];
@@ -262,3 +262,5 @@ $invoker->call(function (Psr\Logger\LoggerInterface $logger) {
 In this example it will `->get('Psr\Logger\LoggerInterface')` from the container.
 
 *Note:* if you container is not compliant with [container-interop](https://github.com/container-interop/container-interop), you can use the [Acclimate](https://github.com/jeremeamia/acclimate-container) package.
+
+This implementation will only do dependency injection based on type-hints. Implementing support for doing dependency injection based on parameter names, or whatever, is easy and up to you!
