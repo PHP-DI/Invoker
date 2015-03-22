@@ -43,6 +43,10 @@ class Invoker implements InvokerInterface
      */
     public function call($callable, array $parameters = array())
     {
+        if ($this->container) {
+            $callable = $this->resolveCallableFromContainer($callable);
+        }
+
         $callableReflection = CallableReflection::create($callable);
 
         $args = $this->parameterResolver->getParameters($callableReflection, $parameters, array());
@@ -61,12 +65,6 @@ class Invoker implements InvokerInterface
         } elseif (is_object($callable)) {
             // Callable object
             $object = $callable;
-        } elseif (is_string($callable) && $this->container) {
-            // Callable class (need to be instantiated)
-            $object = $this->container->get($callable);
-        } elseif (is_string($callable[0]) && $this->container) {
-            // Class method
-            $object = $this->container->get($callable[0]);
         } else {
             // Object method
             $object = $callable[0];
@@ -95,5 +93,47 @@ class Invoker implements InvokerInterface
     public function getParameterResolver()
     {
         return $this->parameterResolver;
+    }
+
+    /**
+     * @param callable|string|array $callable
+     * @return callable
+     */
+    private function resolveCallableFromContainer($callable)
+    {
+        // If it's already a callable there is nothing to do
+        if (is_callable($callable)) {
+            return $callable;
+        }
+
+        // The callable is a container entry name
+        if (is_string($callable)) {
+            if ($this->container->has($callable)) {
+                return $this->container->get($callable);
+            } else {
+                throw new \RuntimeException(sprintf(
+                    '%s is neither a callable or a valid container entry',
+                    $callable
+                ));
+            }
+        }
+
+        // The callable is an array whose first item is a container entry name
+        // e.g. ['some-container-entry', 'methodToCall']
+        if (is_array($callable) && is_string($callable[0])) {
+            if ($this->container->has($callable[0])) {
+                $callable[0] = $this->container->get($callable[0]);
+                return $callable;
+            } else {
+                throw new \RuntimeException(sprintf(
+                    'Cannot call %s on %s because it is not a class nor a valid container entry',
+                    $callable[1],
+                    $callable[0]
+                ));
+            }
+        }
+
+        // Unrecognized stuff, we let it fail later
+        return $callable;
     }
 }

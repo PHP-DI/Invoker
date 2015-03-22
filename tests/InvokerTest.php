@@ -123,6 +123,33 @@ class InvokerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expected, $result);
     }
 
+    /**
+     * @test
+     */
+    public function should_resolve_callable_from_container()
+    {
+        $callable = new CallableSpy;
+        $this->container->set('thing-to-call', $callable);
+
+        $this->invoker->call('thing-to-call');
+
+        $this->assertWasCalled($callable);
+    }
+
+    /**
+     * @test
+     */
+    public function should_resolve_array_callable_from_container()
+    {
+        $fixture = new InvokerTestFixture;
+        $this->container->set('thing-to-call', $fixture);
+
+        $result = $this->invoker->call(array('thing-to-call', 'foo'));
+
+        $this->assertEquals('bar', $result);
+        $this->assertTrue($fixture->wasCalled);
+    }
+
     private function assertWasCalled(CallableSpy $callableSpy)
     {
         $this->assertEquals(1, $callableSpy->getCallCount(), 'The callable should be called once');
@@ -132,5 +159,15 @@ class InvokerTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertWasCalled($callableSpy);
         $this->assertEquals($parameters, $callableSpy->getLastCallParameters());
+    }
+}
+
+class InvokerTestFixture
+{
+    public $wasCalled = false;
+    public function foo()
+    {
+        $this->wasCalled = true;
+        return 'bar';
     }
 }

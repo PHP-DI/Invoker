@@ -41,6 +41,13 @@ class CallableReflection
         }
 
         // Standard function
-        return new \ReflectionFunction($callable);
+        if (is_string($callable) && function_exists($callable)) {
+            return new \ReflectionFunction($callable);
+        }
+
+        throw new \RuntimeException(sprintf(
+            '%s is not a callable',
+            is_string($callable) ? $callable : 'Instance of ' . get_class($callable)
+        ));
     }
 }
