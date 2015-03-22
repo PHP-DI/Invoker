@@ -90,6 +90,10 @@ $ composer require mnapoli/invoker
 
 ## Usage
 
+### Default behavior
+
+By default the `Invoker` can call using named parameters:
+
 ```php
 $invoker = new Invoker\Invoker;
 
@@ -116,4 +120,62 @@ $invoker->call(function ($name = 'world') {
 
 // Invoke any PHP callable
 $invoker->call(['MyClass', 'myStaticMethod']);
+```
+
+### Parameter resolvers
+
+Extending the behavior of the `Invoker` is easy and is done by implementing a `ParameterResolver`:
+
+```php
+interface ParameterResolver
+{
+    public function getParameters(
+        ReflectionFunctionAbstract $reflection,
+        array $providedParameters,
+        array $resolvedParameters
+    );
+}
+```
+
+- `$providedParameters` contains the parameters provided by the user when calling `$invoker->call($callable, $parameters)`
+- `$resolvedParameters` contains parameters that have already been resolved by other parameter resolvers
+
+An `Invoker` can chain multiple parameter resolvers to mix behaviors, e.g. you can mix "named parameters" support with "dependency injection" support. This is why a `ParameterResolver` should skip parameters that are already resolved in `$resolvedParameters`.
+
+Here is an implementation example for dumb dependency injection that creates a new instance of the classes type-hinted:
+
+```php
+class MyParameterResolver implements ParameterResolver
+{
+    public function getParameters(
+        ReflectionFunctionAbstract $reflection,
+        array $providedParameters,
+        array $resolvedParameters
+    ) {
+        foreach ($reflection->getParameters() as $index => $parameter) {
+            if (array_key_exists($index, $resolvedParameters)) {
+                // Skip already resolved parameters
+                continue;
+            }
+
+            $class = $parameter->getClass();
+
+            if ($class) {
+                $resolvedParameters[$index] = $class->newInstance();
+            }
+        }
+
+        return $resolvedParameters;
+    }
+}
+```
+
+To use it:
+
+```php
+$invoker = new Invoker\Invoker(new MyParameterResolver);
+
+$invoker->call(function (ArticleManager $articleManager) {
+    $articleManager->publishArticle('Hello world', 'This is the article content.');
+});
 ```
