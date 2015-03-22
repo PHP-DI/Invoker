@@ -3,6 +3,7 @@
 namespace Invoker\Test;
 
 use Invoker\Invoker;
+use Invoker\ParameterResolver\ContainerParameterResolver;
 use Invoker\Test\Mock\ArrayContainer;
 use Invoker\Test\Mock\CallableSpy;
 
@@ -102,6 +103,24 @@ class InvokerTest extends \PHPUnit_Framework_TestCase
         }, $parameters);
 
         $this->assertEquals('foobarbaz', $result);
+    }
+
+    /**
+     * @test
+     */
+    public function should_do_dependency_injection_with_container_parameter_resolver()
+    {
+        $resolver = new ContainerParameterResolver($this->container);
+        $this->invoker->getParameterResolver()->unshiftResolver($resolver);
+
+        $expected = new \stdClass();
+        $this->container->set('stdClass', $expected);
+
+        $result = $this->invoker->call(function (\stdClass $foo) {
+            return $foo;
+        });
+
+        $this->assertSame($expected, $result);
     }
 
     private function assertWasCalled(CallableSpy $callableSpy)
