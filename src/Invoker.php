@@ -89,4 +89,12 @@ class Invoker implements InvokerInterface
             new DefaultValueParameterResolver,
         ));
     }
+
+    /**
+     * @return ParameterResolver By default it's a ParameterResolverChain
+     */
+    public function getParameterResolver()
+    {
+        return $this->parameterResolver;
+    }
 }

@@ -44,9 +44,24 @@ class ParameterResolverChain implements ParameterResolver
         return $resolvedParameters;
     }
 
+    /**
+     * Push a parameter resolver after the ones already registered.
+     *
+     * @param ParameterResolver $resolver
+     */
     public function pushResolver(ParameterResolver $resolver)
     {
         $this->resolvers[] = $resolver;
+    }
+
+    /**
+     * Insert a parameter resolver before the ones already registered.
+     *
+     * @param ParameterResolver $resolver
+     */
+    public function unshiftResolver(ParameterResolver $resolver)
+    {
+        array_unshift($this->resolvers, $resolver);
     }
 
     private function assertMandatoryParametersAreResolved(
