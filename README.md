@@ -121,6 +121,8 @@ $invoker->call(function ($name = 'world') {
 $invoker->call(['MyClass', 'myStaticMethod']);
 ```
 
+Dependency injection is supported but needs to be configured with your container. Read on or jump to [*Built-in support for dependency injection*](#built-in-support-for-dependency-injection) if you are impatient.
+
 ### Parameter resolvers
 
 Extending the behavior of the `Invoker` is easy and is done by implementing a [`ParameterResolver`](https://github.com/mnapoli/Invoker/blob/master/src/ParameterResolver/ParameterResolver.php):
@@ -234,7 +236,7 @@ $invoker = new Invoker\Invoker($parameterResolver);
 
 ### Built-in support for dependency injection
 
-Rather than have you re-implement support for dependency injection with different containers every time, this package ships with a `ContainerParameterResolver` that can work with any dependency injection container thanks to [container-interop](https://github.com/container-interop/container-interop).
+Rather than have you re-implement support for dependency injection with different containers every time, this package ships with a [`ContainerParameterResolver`](https://github.com/mnapoli/Invoker/blob/master/src/ParameterResolver/ContainerParameterResolver.php) that can work with any dependency injection container thanks to [container-interop](https://github.com/container-interop/container-interop).
 
 Using it is simple:
 
@@ -258,3 +260,5 @@ $invoker->call(function (Psr\Logger\LoggerInterface $logger) {
 ```
 
 In this example it will `->get('Psr\Logger\LoggerInterface')` from the container.
+
+*Note:* if you container is not compliant with [container-interop](https://github.com/container-interop/container-interop), you can use the [Acclimate](https://github.com/jeremeamia/acclimate-container) package.
