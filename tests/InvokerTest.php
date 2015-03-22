@@ -28,13 +28,35 @@ class InvokerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function should_invoke_callable()
+    public function should_invoke_closure()
     {
         $callable = new CallableSpy;
 
         $this->invoker->call($callable);
 
         $this->assertWasCalled($callable);
+    }
+
+    /**
+     * @test
+     */
+    public function should_invoke_method()
+    {
+        $fixture = new InvokerTestFixture;
+
+        $this->invoker->call(array($fixture, 'foo'));
+
+        $this->assertTrue($fixture->wasCalled);
+    }
+
+    /**
+     * @test
+     */
+    public function should_invoke_static_method()
+    {
+        $result = $this->invoker->call(array('Invoker\Test\InvokerTestStaticFixture', 'foo'));
+
+        $this->assertEquals('bar', $result);
     }
 
     /**
@@ -150,6 +172,77 @@ class InvokerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($fixture->wasCalled);
     }
 
+    /**
+     * @test
+     */
+    public function should_resolve_array_callable_from_container_with_class_name()
+    {
+        $fixture = new InvokerTestFixture;
+        $this->container->set('Invoker\Test\InvokerTestFixture', $fixture);
+
+        $result = $this->invoker->call(array('Invoker\Test\InvokerTestFixture', 'foo'));
+
+        $this->assertEquals('bar', $result);
+        $this->assertTrue($fixture->wasCalled);
+    }
+
+    /**
+     * @test
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage Cannot call Invoker\Test\InvokerTestFixture::foo() because foo() is not a static method and "Invoker\Test\InvokerTestFixture" is not a container entry
+     */
+    public function should_not_invoke_statically_a_non_static_method()
+    {
+        $this->invoker->call(array('Invoker\Test\InvokerTestFixture', 'foo'));
+    }
+
+    /**
+     * @test
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage 'foo' is not a callable
+     */
+    public function should_throw_if_calling_non_callable_without_container()
+    {
+        $invoker = new Invoker();
+        $invoker->call('foo');
+    }
+
+    /**
+     * @test
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage foo is neither a callable or a valid container entry
+     */
+    public function should_throw_if_calling_non_callable_with_container()
+    {
+        $invoker = new Invoker(null, new ArrayContainer);
+        $invoker->call('foo');
+    }
+
+    /**
+     * @test
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage Instance of stdClass is not a callable
+     */
+    public function should_throw_if_calling_non_callable_object()
+    {
+        $invoker = new Invoker();
+        $invoker->call(new \stdClass());
+    }
+
+    /**
+     * @test
+     */
+    public function should_invoke_static_method_rather_than_resolving_entry_from_container()
+    {
+        // Register a non-callable so that test fails if we try to invoke that
+        $this->container->set('Invoker\Test\InvokerTestStaticFixture', 'foobar');
+
+        // Call the static method: shouldn't get from the container even though the
+        // entry exist (because we are calling a static method)
+        $result = $this->invoker->call(array('Invoker\Test\InvokerTestStaticFixture', 'foo'));
+        $this->assertEquals('bar', $result);
+    }
+
     private function assertWasCalled(CallableSpy $callableSpy)
     {
         $this->assertEquals(1, $callableSpy->getCallCount(), 'The callable should be called once');
@@ -168,6 +261,14 @@ class InvokerTestFixture
     public function foo()
     {
         $this->wasCalled = true;
+        return 'bar';
+    }
+}
+
+class InvokerTestStaticFixture
+{
+    public static function foo()
+    {
         return 'bar';
     }
 }

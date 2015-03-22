@@ -36,8 +36,8 @@ class Invoker implements InvokerInterface
     /**
      * Call the given function using the given parameters.
      *
-     * @param callable $callable   Function to call.
-     * @param array    $parameters Parameters to use.
+     * @param callable|string|array $callable   Function to call.
+     * @param array                 $parameters Parameters to use.
      *
      * @return mixed Result of the function.
      */
@@ -46,6 +46,7 @@ class Invoker implements InvokerInterface
         if ($this->container) {
             $callable = $this->resolveCallableFromContainer($callable);
         }
+        $this->assertIsCallable($callable);
 
         $callableReflection = CallableReflection::create($callable);
 
@@ -101,9 +102,14 @@ class Invoker implements InvokerInterface
      */
     private function resolveCallableFromContainer($callable)
     {
+        $isStaticCallToNonStaticMethod = false;
+
         // If it's already a callable there is nothing to do
         if (is_callable($callable)) {
-            return $callable;
+            $isStaticCallToNonStaticMethod = $this->isStaticCallToNonStaticMethod($callable);
+            if (! $isStaticCallToNonStaticMethod) {
+                return $callable;
+            }
         }
 
         // The callable is a container entry name
@@ -124,6 +130,14 @@ class Invoker implements InvokerInterface
             if ($this->container->has($callable[0])) {
                 $callable[0] = $this->container->get($callable[0]);
                 return $callable;
+            } elseif ($isStaticCallToNonStaticMethod) {
+                throw new \RuntimeException(sprintf(
+                    'Cannot call %s::%s() because %s() is not a static method and "%s" is not a container entry',
+                    $callable[0],
+                    $callable[1],
+                    $callable[1],
+                    $callable[0]
+                ));
             } else {
                 throw new \RuntimeException(sprintf(
                     'Cannot call %s on %s because it is not a class nor a valid container entry',
@@ -135,5 +149,33 @@ class Invoker implements InvokerInterface
 
         // Unrecognized stuff, we let it fail later
         return $callable;
+    }
+
+    private function assertIsCallable($callable)
+    {
+        if (! is_callable($callable)) {
+            throw new \RuntimeException(sprintf(
+                '%s is not a callable',
+                is_object($callable) ? 'Instance of ' . get_class($callable) : var_export($callable, true)
+            ));
+        }
+    }
+
+    /**
+     * Check if the callable represents a static call to a non-static method.
+     *
+     * @param mixed $callable
+     * @return bool
+     */
+    private function isStaticCallToNonStaticMethod($callable)
+    {
+        if (is_array($callable) && is_string($callable[0])) {
+            list($class, $method) = $callable;
+            $reflection = new \ReflectionMethod($class, $method);
+
+            return !$reflection->isStatic();
+        }
+
+        return false;
     }
 }
