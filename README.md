@@ -179,3 +179,56 @@ $invoker->call(function (ArticleManager $articleManager) {
     $articleManager->publishArticle('Hello world', 'This is the article content.');
 });
 ```
+
+A new instance of `ArticleManager` will be created by our parameter resolver.
+
+#### Chaining parameter resolvers
+
+The fun starts to happen when we want to add support for many things:
+
+- named parameters
+- dependency injection for type-hinted parameters
+- ...
+
+This is where we should use the `ParameterResolverChain`. This resolver implements the [Chain of responsibility](http://en.wikipedia.org/wiki/Chain-of-responsibility_pattern) design pattern.
+
+For example the default chain is:
+
+```php
+$parameterResolver = new ParameterResolverChain([
+    new NumericArrayParameterResolver,
+    new AssociativeArrayParameterResolver,
+    new DefaultValueParameterResolver,
+]);
+```
+
+It allows to support even the most weird use cases like:
+
+```php
+$parameters = [];
+
+// First parameter will receive "Welcome"
+$parameters[] = 'Welcome';
+
+// Parameter named "content" will receive "Hello world!"
+$parameters['content'] = 'Hello world!';
+
+// $published is not defined so it will use its default value
+
+$invoker->call(function ($title, $content, $published = true) {
+    // ...
+}, $parameters);
+```
+
+We can put our custom parameter resolver in the list and created a super-duper invoker that also supports basic dependency injection:
+
+```php
+$parameterResolver = new ParameterResolverChain([
+    new MyParameterResolver, // Our resolver is at the top for highest priority
+    new NumericArrayParameterResolver,
+    new AssociativeArrayParameterResolver,
+    new DefaultValueParameterResolver,
+]);
+
+$invoker = new Invoker\Invoker($parameterResolver);
+```
