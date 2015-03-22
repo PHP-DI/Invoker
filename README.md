@@ -125,116 +125,11 @@ Dependency injection is supported but needs to be configured with your container
 
 ### Parameter resolvers
 
-Extending the behavior of the `Invoker` is easy and is done by implementing a [`ParameterResolver`](https://github.com/mnapoli/Invoker/blob/master/src/ParameterResolver/ParameterResolver.php):
+Extending the behavior of the `Invoker` is easy and is done by implementing a [`ParameterResolver`](https://github.com/mnapoli/Invoker/blob/master/src/ParameterResolver/ParameterResolver.php).
 
-```php
-interface ParameterResolver
-{
-    public function getParameters(
-        ReflectionFunctionAbstract $reflection,
-        array $providedParameters,
-        array $resolvedParameters
-    );
-}
-```
+This is explained in details the [Parameter resolvers](doc/parameter-resolver.md) documentation.
 
-- `$providedParameters` contains the parameters provided by the user when calling `$invoker->call($callable, $parameters)`
-- `$resolvedParameters` contains parameters that have already been resolved by other parameter resolvers
-
-An `Invoker` can chain multiple parameter resolvers to mix behaviors, e.g. you can mix "named parameters" support with "dependency injection" support. This is why a `ParameterResolver` should skip parameters that are already resolved in `$resolvedParameters`.
-
-Here is an implementation example for dumb dependency injection that creates a new instance of the classes type-hinted:
-
-```php
-class MyParameterResolver implements ParameterResolver
-{
-    public function getParameters(
-        ReflectionFunctionAbstract $reflection,
-        array $providedParameters,
-        array $resolvedParameters
-    ) {
-        foreach ($reflection->getParameters() as $index => $parameter) {
-            if (array_key_exists($index, $resolvedParameters)) {
-                // Skip already resolved parameters
-                continue;
-            }
-
-            $class = $parameter->getClass();
-
-            if ($class) {
-                $resolvedParameters[$index] = $class->newInstance();
-            }
-        }
-
-        return $resolvedParameters;
-    }
-}
-```
-
-To use it:
-
-```php
-$invoker = new Invoker\Invoker(new MyParameterResolver);
-
-$invoker->call(function (ArticleManager $articleManager) {
-    $articleManager->publishArticle('Hello world', 'This is the article content.');
-});
-```
-
-A new instance of `ArticleManager` will be created by our parameter resolver.
-
-#### Chaining parameter resolvers
-
-The fun starts to happen when we want to add support for many things:
-
-- named parameters
-- dependency injection for type-hinted parameters
-- ...
-
-This is where we should use the [`ParameterResolverChain`](https://github.com/mnapoli/Invoker/blob/master/src/ParameterResolver/ParameterResolverChain.php). This resolver implements the [Chain of responsibility](http://en.wikipedia.org/wiki/Chain-of-responsibility_pattern) design pattern.
-
-For example the default chain is:
-
-```php
-$parameterResolver = new ParameterResolverChain([
-    new NumericArrayParameterResolver,
-    new AssociativeArrayParameterResolver,
-    new DefaultValueParameterResolver,
-]);
-```
-
-It allows to support even the weirdest use cases like:
-
-```php
-$parameters = [];
-
-// First parameter will receive "Welcome"
-$parameters[] = 'Welcome';
-
-// Parameter named "content" will receive "Hello world!"
-$parameters['content'] = 'Hello world!';
-
-// $published is not defined so it will use its default value
-
-$invoker->call(function ($title, $content, $published = true) {
-    // ...
-}, $parameters);
-```
-
-We can put our custom parameter resolver in the list and created a super-duper invoker that also supports basic dependency injection:
-
-```php
-$parameterResolver = new ParameterResolverChain([
-    new MyParameterResolver, // Our resolver is at the top for highest priority
-    new NumericArrayParameterResolver,
-    new AssociativeArrayParameterResolver,
-    new DefaultValueParameterResolver,
-]);
-
-$invoker = new Invoker\Invoker($parameterResolver);
-```
-
-### Built-in support for dependency injection
+#### Built-in support for dependency injection
 
 Rather than have you re-implement support for dependency injection with different containers every time, this package ships with a [`ContainerParameterResolver`](https://github.com/mnapoli/Invoker/blob/master/src/ParameterResolver/ContainerParameterResolver.php) that can work with any dependency injection container thanks to [container-interop](https://github.com/container-interop/container-interop).
 
@@ -264,3 +159,51 @@ In this example it will `->get('Psr\Logger\LoggerInterface')` from the container
 *Note:* if you container is not compliant with [container-interop](https://github.com/container-interop/container-interop), you can use the [Acclimate](https://github.com/jeremeamia/acclimate-container) package.
 
 This implementation will only do dependency injection based on type-hints. Implementing support for doing dependency injection based on parameter names, or whatever, is easy and up to you!
+
+### Resolving callables from a container
+
+The `Invoker` can be wired to your DI container to resolve the callables.
+
+For example with an invokable class:
+
+```php
+class MyHandler
+{
+    public function __invoke()
+    {
+        // ...
+    }
+}
+
+// By default this doesn't work: an instance of the class should be provided
+$invoker->call('MyHandler');
+
+// If we set up the container to use
+$invoker = new Invoker\Invoker(null, $container);
+// Now 'MyHandler' is resolved using the container!
+$invoker->call('MyHandler');
+```
+
+The same works for a class method:
+
+```php
+class WelcomeController
+{
+    public function home()
+    {
+        // ...
+    }
+}
+
+// By default this doesn't work: home() is not a static method
+$invoker->call(['WelcomeController', 'home']);
+
+// If we set up the container to use
+$invoker = new Invoker\Invoker(null, $container);
+// Now 'WelcomeController' is resolved using the container!
+$invoker->call(['WelcomeController', 'home']);
+```
+
+That feature can be used as the base building block for a framework's dispatcher.
+
+Again, any [container-interop](https://github.com/container-interop/container-interop) compliant container can be provided, and [Acclimate](https://github.com/jeremeamia/acclimate-container) can be used for incompatible containers.
