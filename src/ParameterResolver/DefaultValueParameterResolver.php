@@ -4,7 +4,6 @@ namespace Invoker\ParameterResolver;
 
 use ReflectionException;
 use ReflectionFunctionAbstract;
-use ReflectionParameter;
 
 /**
  * Finds the default value for a parameter, *if it exists*.
