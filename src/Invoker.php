@@ -23,12 +23,11 @@ class Invoker implements InvokerInterface
     private $parameterResolver;
 
     /**
-     * TODO optionally null
-     * @var ContainerInterface
+     * @var ContainerInterface|null
      */
     private $container;
 
-    public function __construct(ParameterResolver $parameterResolver = null, ContainerInterface $container)
+    public function __construct(ParameterResolver $parameterResolver = null, ContainerInterface $container = null)
     {
         $this->parameterResolver = $parameterResolver ?: $this->createParameterResolver();
         $this->container = $container;
@@ -62,10 +61,10 @@ class Invoker implements InvokerInterface
         } elseif (is_object($callable)) {
             // Callable object
             $object = $callable;
-        } elseif (is_string($callable)) {
+        } elseif (is_string($callable) && $this->container) {
             // Callable class (need to be instantiated)
             $object = $this->container->get($callable);
-        } elseif (is_string($callable[0])) {
+        } elseif (is_string($callable[0]) && $this->container) {
             // Class method
             $object = $this->container->get($callable[0]);
         } else {
