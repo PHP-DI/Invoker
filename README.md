@@ -121,7 +121,9 @@ $invoker->call(function ($name = 'world') {
 $invoker->call(['MyClass', 'myStaticMethod']);
 ```
 
-Dependency injection is supported but needs to be configured with your container. Read on or jump to [*Built-in support for dependency injection*](#built-in-support-for-dependency-injection) if you are impatient.
+Dependency injection in parameters is supported but needs to be configured with your container. Read on or jump to [*Built-in support for dependency injection*](#built-in-support-for-dependency-injection) if you are impatient.
+
+Additionally, callables can also be resolved from your container. Read on or jump to [*Resolving callables from a container*](#resolving-callables-from-a-container) if you are impatient.
 
 ### Parameter resolvers
 
