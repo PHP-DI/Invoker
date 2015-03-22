@@ -129,7 +129,7 @@ Additionally, callables can also be resolved from your container. Read on or jum
 
 Extending the behavior of the `Invoker` is easy and is done by implementing a [`ParameterResolver`](https://github.com/mnapoli/Invoker/blob/master/src/ParameterResolver/ParameterResolver.php).
 
-This is explained in details the [Parameter resolvers](doc/parameter-resolver.md) documentation.
+This is explained in details the [Parameter resolvers documentation](doc/parameter-resolver.md).
 
 #### Built-in support for dependency injection
 
