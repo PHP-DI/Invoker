@@ -2,9 +2,9 @@
 
 Generic and extensible callable invoker.
 
-[![Build Status](https://img.shields.io/travis/mnapoli/invoker.svg?style=flat-square)](https://travis-ci.org/mnapoli/invoker)
-[![Coverage Status](https://img.shields.io/coveralls/mnapoli/invoker/master.svg?style=flat-square)](https://coveralls.io/r/mnapoli/invoker?branch=master)
-[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/mnapoli/invoker.svg?style=flat-square)](https://scrutinizer-ci.com/g/mnapoli/invoker/?branch=master)
+[![Build Status](https://img.shields.io/travis/mnapoli/Invoker.svg?style=flat-square)](https://travis-ci.org/mnapoli/Invoker)
+[![Coverage Status](https://img.shields.io/coveralls/mnapoli/Invoker/master.svg?style=flat-square)](https://coveralls.io/r/mnapoli/Invoker?branch=master)
+[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/mnapoli/Invoker.svg?style=flat-square)](https://scrutinizer-ci.com/g/mnapoli/Invoker/?branch=master)
 [![Latest Version](https://img.shields.io/github/release/mnapoli/invoker.svg?style=flat-square)](https://packagist.org/packages/mnapoli/invoker)
 [![Total Downloads](https://img.shields.io/packagist/dt/mnapoli/invoker.svg?style=flat-square)](https://packagist.org/packages/mnapoli/invoker)
 
