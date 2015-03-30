@@ -49,7 +49,7 @@ class ResolverChain implements ParameterResolver
      *
      * @param ParameterResolver $resolver
      */
-    public function pushResolver(ParameterResolver $resolver)
+    public function appendResolver(ParameterResolver $resolver)
     {
         $this->resolvers[] = $resolver;
     }
@@ -59,7 +59,7 @@ class ResolverChain implements ParameterResolver
      *
      * @param ParameterResolver $resolver
      */
-    public function unshiftResolver(ParameterResolver $resolver)
+    public function prependResolver(ParameterResolver $resolver)
     {
         array_unshift($this->resolvers, $resolver);
     }
