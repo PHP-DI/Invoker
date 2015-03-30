@@ -37,7 +37,7 @@ class ParameterNameContainerResolver implements ParameterResolver
                 continue;
             }
 
-            $name = $parameter->getName();
+            $name = $parameter->name;
 
             if ($name && $this->container->has($name)) {
                 $resolvedParameters[$index] = $this->container->get($name);
