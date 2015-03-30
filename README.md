@@ -133,34 +133,52 @@ This is explained in details the [Parameter resolvers documentation](doc/paramet
 
 #### Built-in support for dependency injection
 
-Rather than have you re-implement support for dependency injection with different containers every time, this package ships with a [`TypeHintContainerResolver`](https://github.com/mnapoli/Invoker/blob/master/src/ParameterResolver/Container/TypeHintContainerResolver.php) that can work with any dependency injection container thanks to [container-interop](https://github.com/container-interop/container-interop).
+Rather than have you re-implement support for dependency injection with different containers every time, this package ships with 2 optional resolvers:
 
-Using it is simple:
+- [`TypeHintContainerResolver`](https://github.com/mnapoli/Invoker/blob/master/src/ParameterResolver/Container/TypeHintContainerResolver.php)
+
+    This resolver will inject container entries by searching for the class name using the type-hint:
+
+    ```php
+    $invoker->call(function (Psr\Logger\LoggerInterface $logger) {
+        // ...
+    });
+    ```
+
+    In this example it will `->get('Psr\Logger\LoggerInterface')` from the container.
+
+    This resolver is only useful if you store objects in your container using the class (or interface) name. Silex or Symfony for example store services under a custom name (e.g. `twig`, `doctrine.orm.entity_manager`, etc.) instead of the class name: in that case use the resolver shown below.
+
+- [`ParameterNameContainerResolver`](https://github.com/mnapoli/Invoker/blob/master/src/ParameterResolver/Container/ParameterNameContainerResolver.php)
+
+    This resolver will inject container entries by searching for the name of the parameter:
+
+    ```php
+    $invoker->call(function ($twig) {
+        // ...
+    });
+    ```
+
+    In this example it will `->get('twig')` from the container.
+
+These resolvers can work with any dependency injection container compliant with [container-interop](https://github.com/container-interop/container-interop). If you container is not compliant you can use the [Acclimate](https://github.com/jeremeamia/acclimate-container) package.
+
+Setting up those resolvers is simple:
 
 ```php
 // $container must be an instance of Interop\Container\ContainerInterface
 $container = ...
 
 $containerResolver = new TypeHintContainerResolver($container);
+// or
+$containerResolver = new ParameterNameContainerResolver($container);
 
 $invoker = new Invoker\Invoker;
 // Register it before all the other parameter resolvers
-$invoker->getParameterResolver()->unshiftResolver($containerResolver);
+$invoker->getParameterResolver()->prependResolver($containerResolver);
 ```
 
-This parameter resolver will use the type-hints to look into the container:
-
-```php
-$invoker->call(function (Psr\Logger\LoggerInterface $logger) {
-    // ...
-});
-```
-
-In this example it will `->get('Psr\Logger\LoggerInterface')` from the container.
-
-*Note:* if you container is not compliant with [container-interop](https://github.com/container-interop/container-interop), you can use the [Acclimate](https://github.com/jeremeamia/acclimate-container) package.
-
-This implementation will only do dependency injection based on type-hints. Implementing support for doing dependency injection based on parameter names, or whatever, is easy and up to you!
+You can also register both resolvers at the same time if you wish by prepending both (in the order you wish). Implementing support for more tricky things is easy and up to you!
 
 ### Resolving callables from a container
 

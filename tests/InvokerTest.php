@@ -3,6 +3,7 @@
 namespace Invoker\Test;
 
 use Invoker\Invoker;
+use Invoker\ParameterResolver\Container\ParameterNameContainerResolver;
 use Invoker\ParameterResolver\Container\TypeHintContainerResolver;
 use Invoker\Test\Mock\ArrayContainer;
 use Invoker\Test\Mock\CallableSpy;
@@ -130,15 +131,33 @@ class InvokerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function should_do_dependency_injection_with_container_parameter_resolver()
+    public function should_do_dependency_injection_with_typehint_container_resolver()
     {
         $resolver = new TypeHintContainerResolver($this->container);
-        $this->invoker->getParameterResolver()->unshiftResolver($resolver);
+        $this->invoker->getParameterResolver()->prependResolver($resolver);
 
         $expected = new \stdClass();
         $this->container->set('stdClass', $expected);
 
         $result = $this->invoker->call(function (\stdClass $foo) {
+            return $foo;
+        });
+
+        $this->assertSame($expected, $result);
+    }
+
+    /**
+     * @test
+     */
+    public function should_do_dependency_injection_with_parameter_name_container_resolver()
+    {
+        $resolver = new ParameterNameContainerResolver($this->container);
+        $this->invoker->getParameterResolver()->prependResolver($resolver);
+
+        $expected = new \stdClass();
+        $this->container->set('foo', $expected);
+
+        $result = $this->invoker->call(function ($foo) {
             return $foo;
         });
 
