@@ -3,11 +3,11 @@
 namespace Invoker;
 
 use Interop\Container\ContainerInterface;
-use Invoker\ParameterResolver\AssociativeArrayParameterResolver;
-use Invoker\ParameterResolver\DefaultValueParameterResolver;
-use Invoker\ParameterResolver\NumericArrayParameterResolver;
+use Invoker\ParameterResolver\AssociativeArrayResolver;
+use Invoker\ParameterResolver\DefaultValueResolver;
+use Invoker\ParameterResolver\NumericArrayResolver;
 use Invoker\ParameterResolver\ParameterResolver;
-use Invoker\ParameterResolver\ParameterResolverChain;
+use Invoker\ParameterResolver\ResolverChain;
 use Invoker\Reflection\CallableReflection;
 
 /**
@@ -81,15 +81,15 @@ class Invoker implements InvokerInterface
      */
     private function createParameterResolver()
     {
-        return new ParameterResolverChain(array(
-            new NumericArrayParameterResolver,
-            new AssociativeArrayParameterResolver,
-            new DefaultValueParameterResolver,
+        return new ResolverChain(array(
+            new NumericArrayResolver,
+            new AssociativeArrayResolver,
+            new DefaultValueResolver,
         ));
     }
 
     /**
-     * @return ParameterResolver By default it's a ParameterResolverChain
+     * @return ParameterResolver By default it's a ResolverChain
      */
     public function getParameterResolver()
     {

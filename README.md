@@ -133,7 +133,7 @@ This is explained in details the [Parameter resolvers documentation](doc/paramet
 
 #### Built-in support for dependency injection
 
-Rather than have you re-implement support for dependency injection with different containers every time, this package ships with a [`ContainerParameterResolver`](https://github.com/mnapoli/Invoker/blob/master/src/ParameterResolver/ContainerParameterResolver.php) that can work with any dependency injection container thanks to [container-interop](https://github.com/container-interop/container-interop).
+Rather than have you re-implement support for dependency injection with different containers every time, this package ships with a [`TypeHintContainerResolver`](https://github.com/mnapoli/Invoker/blob/master/src/ParameterResolver/Container/TypeHintContainerResolver.php) that can work with any dependency injection container thanks to [container-interop](https://github.com/container-interop/container-interop).
 
 Using it is simple:
 
@@ -141,7 +141,7 @@ Using it is simple:
 // $container must be an instance of Interop\Container\ContainerInterface
 $container = ...
 
-$containerResolver = new ContainerParameterResolver($container);
+$containerResolver = new TypeHintContainerResolver($container);
 
 $invoker = new Invoker\Invoker;
 // Register it before all the other parameter resolvers

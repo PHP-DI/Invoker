@@ -1,8 +1,9 @@
 <?php
 
-namespace Invoker\ParameterResolver;
+namespace Invoker\ParameterResolver\Container;
 
 use Interop\Container\ContainerInterface;
+use Invoker\ParameterResolver\ParameterResolver;
 use ReflectionFunctionAbstract;
 
 /**
@@ -10,7 +11,7 @@ use ReflectionFunctionAbstract;
  *
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class ContainerParameterResolver implements ParameterResolver
+class TypeHintContainerResolver implements ParameterResolver
 {
     /**
      * @var ContainerInterface

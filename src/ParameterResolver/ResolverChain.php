@@ -11,7 +11,7 @@ use ReflectionFunctionAbstract;
  *
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class ParameterResolverChain implements ParameterResolver
+class ResolverChain implements ParameterResolver
 {
     /**
      * @var ParameterResolver[]

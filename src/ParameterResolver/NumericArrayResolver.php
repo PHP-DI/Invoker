@@ -16,7 +16,7 @@ use ReflectionFunctionAbstract;
  *
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class NumericArrayParameterResolver implements ParameterResolver
+class NumericArrayResolver implements ParameterResolver
 {
     public function getParameters(
         ReflectionFunctionAbstract $reflection,

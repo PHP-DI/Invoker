@@ -1,16 +1,16 @@
 <?php
 
-namespace Invoker\Test\ParameterResolver;
+namespace Invoker\Test\ParameterResolver\Container;
 
-use Invoker\ParameterResolver\ContainerParameterResolver;
+use Invoker\ParameterResolver\Container\TypeHintContainerResolver;
 use Invoker\Test\Mock\ArrayContainer;
 
-class ContainerParameterResolverTest extends \PHPUnit_Framework_TestCase
+class TypeHintContainerResolverTest extends \PHPUnit_Framework_TestCase
 {
-    const FIXTURE = 'Invoker\Test\ParameterResolver\ContainerParameterResolverTestFixture';
+    const FIXTURE = 'Invoker\Test\ParameterResolver\Container\TypeHintContainerResolverFixture';
 
     /**
-     * @var ContainerParameterResolver
+     * @var TypeHintContainerResolver
      */
     private $resolver;
 
@@ -22,7 +22,7 @@ class ContainerParameterResolverTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->container = new ArrayContainer;
-        $this->resolver = new ContainerParameterResolver($this->container);
+        $this->resolver = new TypeHintContainerResolver($this->container);
     }
 
     /**
@@ -30,10 +30,10 @@ class ContainerParameterResolverTest extends \PHPUnit_Framework_TestCase
      */
     public function should_resolve_parameter_with_typehint_and_container()
     {
-        $callable = function (ContainerParameterResolverTestFixture $foo) {};
+        $callable = function (TypeHintContainerResolverFixture $foo) {};
         $reflection = new \ReflectionFunction($callable);
 
-        $fixture = new ContainerParameterResolverTestFixture;
+        $fixture = new TypeHintContainerResolverFixture;
         $this->container->set(self::FIXTURE, $fixture);
 
         $parameters = $this->resolver->getParameters($reflection, array(), array());
@@ -47,7 +47,7 @@ class ContainerParameterResolverTest extends \PHPUnit_Framework_TestCase
      */
     public function should_skip_parameter_if_container_cannot_provide_typehint()
     {
-        $callable = function (ContainerParameterResolverTestFixture $foo) {};
+        $callable = function (TypeHintContainerResolverFixture $foo) {};
         $reflection = new \ReflectionFunction($callable);
 
         $parameters = $this->resolver->getParameters($reflection, array(), array());
@@ -60,10 +60,10 @@ class ContainerParameterResolverTest extends \PHPUnit_Framework_TestCase
      */
     public function should_skip_parameter_if_already_resolved()
     {
-        $callable = function (ContainerParameterResolverTestFixture $foo) {};
+        $callable = function (TypeHintContainerResolverFixture $foo) {};
         $reflection = new \ReflectionFunction($callable);
 
-        $this->container->set(self::FIXTURE, new ContainerParameterResolverTestFixture);
+        $this->container->set(self::FIXTURE, new TypeHintContainerResolverFixture);
 
         $resolvedParameters = array('first param value');
         $parameters = $this->resolver->getParameters($reflection, array(), $resolvedParameters);
@@ -72,6 +72,6 @@ class ContainerParameterResolverTest extends \PHPUnit_Framework_TestCase
     }
 }
 
-class ContainerParameterResolverTestFixture
+class TypeHintContainerResolverFixture
 {
 }
