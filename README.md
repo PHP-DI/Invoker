@@ -145,9 +145,9 @@ Rather than have you re-implement support for dependency injection with differen
     });
     ```
 
-    In this example it will `->get('Psr\Logger\LoggerInterface')` from the container.
+    In this example it will `->get('Psr\Logger\LoggerInterface')` from the container and inject it.
 
-    This resolver is only useful if you store objects in your container using the class (or interface) name. Silex or Symfony for example store services under a custom name (e.g. `twig`, `doctrine.orm.entity_manager`, etc.) instead of the class name: in that case use the resolver shown below.
+    This resolver is only useful if you store objects in your container using the class (or interface) name. Silex or Symfony for example store services under a custom name (e.g. `twig`, `db`, etc.) instead of the class name: in that case use the resolver shown below.
 
 - [`ParameterNameContainerResolver`](https://github.com/mnapoli/Invoker/blob/master/src/ParameterResolver/Container/ParameterNameContainerResolver.php)
 
@@ -159,7 +159,7 @@ Rather than have you re-implement support for dependency injection with differen
     });
     ```
 
-    In this example it will `->get('twig')` from the container.
+    In this example it will `->get('twig')` from the container and inject it.
 
 These resolvers can work with any dependency injection container compliant with [container-interop](https://github.com/container-interop/container-interop). If you container is not compliant you can use the [Acclimate](https://github.com/jeremeamia/acclimate-container) package.
 
@@ -178,7 +178,7 @@ $invoker = new Invoker\Invoker;
 $invoker->getParameterResolver()->prependResolver($containerResolver);
 ```
 
-You can also register both resolvers at the same time if you wish by prepending both (in the order you wish). Implementing support for more tricky things is easy and up to you!
+You can also register both resolvers at the same time if you wish by prepending both. Implementing support for more tricky things is easy and up to you!
 
 ### Resolving callables from a container
 
