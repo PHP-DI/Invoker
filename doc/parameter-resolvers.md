@@ -66,15 +66,15 @@ The fun starts to happen when we want to add support for many things:
 - dependency injection for type-hinted parameters
 - ...
 
-This is where we should use the [`ParameterResolverChain`](https://github.com/mnapoli/Invoker/blob/master/src/ParameterResolver/ParameterResolverChain.php). This resolver implements the [Chain of responsibility](http://en.wikipedia.org/wiki/Chain-of-responsibility_pattern) design pattern.
+This is where we should use the [`ResolverChain`](https://github.com/mnapoli/Invoker/blob/master/src/ParameterResolver/ResolverChain.php). This resolver implements the [Chain of responsibility](http://en.wikipedia.org/wiki/Chain-of-responsibility_pattern) design pattern.
 
 For example the default chain is:
 
 ```php
-$parameterResolver = new ParameterResolverChain([
-    new NumericArrayParameterResolver,
-    new AssociativeArrayParameterResolver,
-    new DefaultValueParameterResolver,
+$parameterResolver = new ResolverChain([
+    new NumericArrayResolver,
+    new AssociativeArrayResolver,
+    new DefaultValueResolver,
 ]);
 ```
 
@@ -99,11 +99,11 @@ $invoker->call(function ($title, $content, $published = true) {
 We can put our custom parameter resolver in the list and created a super-duper invoker that also supports basic dependency injection:
 
 ```php
-$parameterResolver = new ParameterResolverChain([
+$parameterResolver = new ResolverChain([
     new MyParameterResolver, // Our resolver is at the top for highest priority
-    new NumericArrayParameterResolver,
-    new AssociativeArrayParameterResolver,
-    new DefaultValueParameterResolver,
+    new NumericArrayResolver,
+    new AssociativeArrayResolver,
+    new DefaultValueResolver,
 ]);
 
 $invoker = new Invoker\Invoker($parameterResolver);
