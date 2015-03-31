@@ -3,7 +3,6 @@
 namespace Invoker\Test\Benchmark;
 
 use Athletic\AthleticEvent;
-use Invoker\Test\Mock\ArrayContainer;
 use Invoker\Invoker;
 
 class Benchmark extends AthleticEvent
@@ -15,63 +14,54 @@ class Benchmark extends AthleticEvent
 
     private $noop;
 
-    public function classSetUp() {
-        $container = new ArrayContainer;
-
-        $this->invoker = new Invoker(null, $container);
+    public function classSetUp()
+    {
+        $this->invoker = new Invoker();
         $this->noop = new Noop();
     }
 
     /**
      * @baseline
-     * @iterations 100
+     * @iterations 10000
      */
-    public function callUserFunc()
+    public function native_invoke_closure()
     {
-        call_user_func(function() {
+        call_user_func(function () {
             // call-target, intenionally left empty
         });
     }
 
     /**
-     * @iterations 100
+     * @iterations 10000
      */
-    public function callUserMethod()
+    public function native_invoke_method()
     {
-        call_user_func([$this->noop, 'noop']);
+        call_user_func(array($this->noop, 'noop'));
     }
 
     /**
-     * @iterations 100
+     * @iterations 10000
      */
-    public function invokerCallUserFunc()
+    public function invoke_closure()
     {
-        $this->invoker->call(function() {
-           // call-target, intenionally left empty
+        $this->invoker->call(function () {
+            // call-target, intenionally left empty
         });
     }
 
     /**
-     * @iterations 100
+     * @iterations 10000
      */
-    public function invokerCallUserMethod()
+    public function invoke_method()
     {
-        $this->invoker->call([$this->noop, 'noop']);
+        $this->invoker->call(array($this->noop, 'noop'));
     }
 
     /**
-     * @iterations 100
+     * @iterations 10000
      */
-    public function invokerCallNamedMethod()
+    public function invoke_with_named_parameters()
     {
-        $this->invoker->call([$this->noop, 'namedNoop'], ['name' => 'foo']);
-    }
-
-    /**
-     * @iterations 100
-     */
-    public function invokerCallTypehintedMethod()
-    {
-        $this->invoker->call([$this->noop, 'typehintedNoop'], ['noop' => new Noop()]);
+        $this->invoker->call(array($this->noop, 'namedNoop'), array('name' => 'foo'));
     }
 }
