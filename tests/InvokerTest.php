@@ -74,12 +74,15 @@ class InvokerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Unable to invoke the callable because no value was given for parameter 1 ($foo)
+     * @expectedException \Invoker\Exception\NotEnoughParametersException
+     * @expectedExceptionMessage Unable to invoke the callable because no value was given for parameter 2 ($bar)
      */
     public function should_throw_if_no_value_for_parameter()
     {
-        $this->invoker->call(function ($foo) {});
+        $this->invoker->call(function ($foo, $bar, $baz) {}, array(
+            'foo' => 'foo',
+            'baz' => 'baz',
+        ));
     }
 
     /**
@@ -207,7 +210,7 @@ class InvokerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException \RuntimeException
+     * @expectedException \Invoker\Exception\NotCallableException
      * @expectedExceptionMessage Cannot call Invoker\Test\InvokerTestFixture::foo() because foo() is not a static method and "Invoker\Test\InvokerTestFixture" is not a container entry
      */
     public function should_not_invoke_statically_a_non_static_method()
@@ -217,7 +220,7 @@ class InvokerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException \RuntimeException
+     * @expectedException \Invoker\Exception\NotCallableException
      * @expectedExceptionMessage 'foo' is not a callable
      */
     public function should_throw_if_calling_non_callable_without_container()
@@ -228,7 +231,7 @@ class InvokerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException \RuntimeException
+     * @expectedException \Invoker\Exception\NotCallableException
      * @expectedExceptionMessage foo is neither a callable or a valid container entry
      */
     public function should_throw_if_calling_non_callable_with_container()
@@ -239,7 +242,7 @@ class InvokerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException \RuntimeException
+     * @expectedException \Invoker\Exception\NotCallableException
      * @expectedExceptionMessage Instance of stdClass is not a callable
      */
     public function should_throw_if_calling_non_callable_object()

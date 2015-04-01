@@ -2,6 +2,8 @@
 
 namespace Invoker\Reflection;
 
+use Invoker\Exception\NotCallableException;
+
 /**
  * Create a reflection object from a callable.
  *
@@ -13,6 +15,8 @@ class CallableReflection
      * @param callable $callable
      *
      * @return \ReflectionFunctionAbstract
+     *
+     * @throws NotCallableException
      *
      * TODO Use the `callable` type-hint once support for PHP 5.4 and up.
      */
@@ -45,7 +49,7 @@ class CallableReflection
             return new \ReflectionFunction($callable);
         }
 
-        throw new \RuntimeException(sprintf(
+        throw new NotCallableException(sprintf(
             '%s is not a callable',
             is_string($callable) ? $callable : 'Instance of ' . get_class($callable)
         ));

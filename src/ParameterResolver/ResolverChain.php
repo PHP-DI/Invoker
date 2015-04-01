@@ -28,8 +28,6 @@ class ResolverChain implements ParameterResolver
         array $providedParameters,
         array $resolvedParameters
     ) {
-        $parameterCount = $reflection->getNumberOfRequiredParameters();
-
         foreach ($this->resolvers as $resolver) {
             // TODO optimize: stop traversing once all parameters are resolved
             $resolvedParameters = $resolver->getParameters(
@@ -38,8 +36,6 @@ class ResolverChain implements ParameterResolver
                 $resolvedParameters
             );
         }
-
-        $this->assertMandatoryParametersAreResolved($parameterCount, $resolvedParameters, $reflection);
 
         return $resolvedParameters;
     }
@@ -62,25 +58,5 @@ class ResolverChain implements ParameterResolver
     public function prependResolver(ParameterResolver $resolver)
     {
         array_unshift($this->resolvers, $resolver);
-    }
-
-    private function assertMandatoryParametersAreResolved(
-        $parameterCount,
-        $parameters,
-        ReflectionFunctionAbstract $reflection
-    ) {
-        // TODO is there a more efficient way?
-        for ($i = 0; $i < $parameterCount; $i++) {
-            if (! array_key_exists($i, $parameters)) {
-                $reflectionParameters = $reflection->getParameters();
-                $parameter = $reflectionParameters[$i];
-
-                throw new \RuntimeException(sprintf(
-                    'Unable to invoke the callable because no value was given for parameter %d ($%s)',
-                    $i + 1,
-                    $parameter->name
-                ));
-            }
-        }
     }
 }

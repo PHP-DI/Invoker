@@ -2,6 +2,10 @@
 
 namespace Invoker;
 
+use Invoker\Exception\InvocationException;
+use Invoker\Exception\NotCallableException;
+use Invoker\Exception\NotEnoughParametersException;
+
 /**
  * Invoke a callable.
  *
@@ -16,6 +20,10 @@ interface InvokerInterface
      * @param array    $parameters Parameters to use.
      *
      * @return mixed Result of the function.
+     *
+     * @throws InvocationException Base exception class for all the sub-exceptions below.
+     * @throws NotCallableException
+     * @throws NotEnoughParametersException
      */
     public function call($callable, array $parameters = array());
 }
