@@ -97,6 +97,14 @@ class Invoker implements InvokerInterface
     }
 
     /**
+     * @return ContainerInterface|null
+     */
+    public function getContainer()
+    {
+        return $this->container;
+    }
+
+    /**
      * @param callable|string|array $callable
      * @return callable
      */
