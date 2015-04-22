@@ -90,7 +90,6 @@ $parameters[] = 'Welcome';
 $parameters['content'] = 'Hello world!';
 
 // $published is not defined so it will use its default value
-
 $invoker->call(function ($title, $content, $published = true) {
     // ...
 }, $parameters);
