@@ -2,10 +2,10 @@
 
 Generic and extensible callable invoker.
 
-[![Build Status](https://img.shields.io/travis/mnapoli/Invoker.svg?style=flat-square)](https://travis-ci.org/mnapoli/Invoker)
-[![Coverage Status](https://img.shields.io/coveralls/mnapoli/Invoker/master.svg?style=flat-square)](https://coveralls.io/r/mnapoli/Invoker?branch=master)
-[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/mnapoli/Invoker.svg?style=flat-square)](https://scrutinizer-ci.com/g/mnapoli/Invoker/?branch=master)
-[![Latest Version](https://img.shields.io/github/release/mnapoli/invoker.svg?style=flat-square)](https://packagist.org/packages/mnapoli/invoker)
+[![Build Status](https://img.shields.io/travis/PHP-DI/Invoker.svg?style=flat-square)](https://travis-ci.org/PHP-DI/Invoker)
+[![Coverage Status](https://img.shields.io/coveralls/PHP-DI/Invoker/master.svg?style=flat-square)](https://coveralls.io/r/PHP-DI/Invoker?branch=master)
+[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/PHP-DI/Invoker.svg?style=flat-square)](https://scrutinizer-ci.com/g/PHP-DI/Invoker/?branch=master)
+[![Latest Version](https://img.shields.io/github/release/PHP-DI/invoker.svg?style=flat-square)](https://packagist.org/packages/PHP-DI/invoker)
 
 ## Why?
 
@@ -84,7 +84,7 @@ In short, this library is meant to be a base building block for calling a functi
 ## Installation
 
 ```sh
-$ composer require mnapoli/invoker
+$ composer require PHP-DI/invoker
 ```
 
 ## Usage
@@ -127,7 +127,7 @@ Additionally, callables can also be resolved from your container. Read on or jum
 
 ### Parameter resolvers
 
-Extending the behavior of the `Invoker` is easy and is done by implementing a [`ParameterResolver`](https://github.com/mnapoli/Invoker/blob/master/src/ParameterResolver/ParameterResolver.php).
+Extending the behavior of the `Invoker` is easy and is done by implementing a [`ParameterResolver`](https://github.com/PHP-DI/Invoker/blob/master/src/ParameterResolver/ParameterResolver.php).
 
 This is explained in details the [Parameter resolvers documentation](doc/parameter-resolvers.md).
 
@@ -135,7 +135,7 @@ This is explained in details the [Parameter resolvers documentation](doc/paramet
 
 Rather than have you re-implement support for dependency injection with different containers every time, this package ships with 2 optional resolvers:
 
-- [`TypeHintContainerResolver`](https://github.com/mnapoli/Invoker/blob/master/src/ParameterResolver/Container/TypeHintContainerResolver.php)
+- [`TypeHintContainerResolver`](https://github.com/PHP-DI/Invoker/blob/master/src/ParameterResolver/Container/TypeHintContainerResolver.php)
 
     This resolver will inject container entries by searching for the class name using the type-hint:
 
@@ -149,7 +149,7 @@ Rather than have you re-implement support for dependency injection with differen
 
     This resolver is only useful if you store objects in your container using the class (or interface) name. Silex or Symfony for example store services under a custom name (e.g. `twig`, `db`, etc.) instead of the class name: in that case use the resolver shown below.
 
-- [`ParameterNameContainerResolver`](https://github.com/mnapoli/Invoker/blob/master/src/ParameterResolver/Container/ParameterNameContainerResolver.php)
+- [`ParameterNameContainerResolver`](https://github.com/PHP-DI/Invoker/blob/master/src/ParameterResolver/Container/ParameterNameContainerResolver.php)
 
     This resolver will inject container entries by searching for the name of the parameter:
 
