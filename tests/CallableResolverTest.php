@@ -27,9 +27,29 @@ class CallableResolverTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function resolves_function_callable()
+    {
+        $result = $this->resolver->resolve('strlen');
+
+        $this->assertSame(strlen('Hello world!'), $result('Hello world!'));
+    }
+
+    /**
+     * @test
+     */
+    public function resolves_namespaced_function_callable()
+    {
+        $result = $this->resolver->resolve(__NAMESPACE__ . '\foo');
+
+        $this->assertEquals('bar', $result());
+    }
+
+    /**
+     * @test
+     */
     public function resolves_callable_from_container()
     {
-        $callable = new CallableSpy;
+        $callable = function () {};
         $this->container->set('thing-to-call', $callable);
 
         $this->assertSame($callable, $this->resolver->resolve('thing-to-call'));
@@ -38,7 +58,18 @@ class CallableResolverTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function resolves_array_callable_from_container()
+    public function resolves_invokable_class_from_container()
+    {
+        $callable = new CallableSpy;
+        $this->container->set('Invoker\Test\Mock\CallableSpy', $callable);
+
+        $this->assertSame($callable, $this->resolver->resolve('Invoker\Test\Mock\CallableSpy'));
+    }
+
+    /**
+     * @test
+     */
+    public function resolves_method_call_service_from_container()
     {
         $fixture = new InvokerTestFixture;
         $this->container->set('thing-to-call', $fixture);
@@ -52,7 +83,7 @@ class CallableResolverTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function resolve_array_callable_from_container_with_class_name()
+    public function resolves_method_call_class_from_container()
     {
         $fixture = new InvokerTestFixture;
         $this->container->set('Invoker\Test\InvokerTestFixture', $fixture);
@@ -73,4 +104,9 @@ class CallableResolverTest extends \PHPUnit_Framework_TestCase
         $resolver = new CallableResolver(new ArrayContainer);
         $resolver->resolve('foo');
     }
+}
+
+function foo()
+{
+    return 'bar';
 }
