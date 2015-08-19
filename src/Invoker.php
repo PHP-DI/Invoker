@@ -119,6 +119,14 @@ class Invoker implements InvokerInterface
         return $this->container;
     }
 
+    /**
+     * @return CallableResolver|null Returns null if no container was given in the constructor.
+     */
+    public function getCallableResolver()
+    {
+        return $this->callableResolver;
+    }
+
     private function assertMandatoryParametersAreResolved($parameters, ReflectionFunctionAbstract $reflection)
     {
         $parameterCount = $reflection->getNumberOfRequiredParameters();
