@@ -22,7 +22,7 @@ class Benchmark extends AthleticEvent
 
     /**
      * @baseline
-     * @iterations 10000
+     * @iterations 100000
      */
     public function native_invoke_closure()
     {
@@ -32,7 +32,7 @@ class Benchmark extends AthleticEvent
     }
 
     /**
-     * @iterations 10000
+     * @iterations 100000
      */
     public function native_invoke_method()
     {
@@ -40,7 +40,7 @@ class Benchmark extends AthleticEvent
     }
 
     /**
-     * @iterations 10000
+     * @iterations 100000
      */
     public function invoke_closure()
     {
@@ -50,7 +50,7 @@ class Benchmark extends AthleticEvent
     }
 
     /**
-     * @iterations 10000
+     * @iterations 100000
      */
     public function invoke_method()
     {
@@ -58,7 +58,7 @@ class Benchmark extends AthleticEvent
     }
 
     /**
-     * @iterations 10000
+     * @iterations 100000
      */
     public function invoke_with_named_parameters()
     {
