@@ -59,7 +59,7 @@ class Invoker implements InvokerInterface
         ksort($args);
 
         // Check all parameters are resolved
-        $diff = array_diff_key($callableReflection->getParameters(), $parameters);
+        $diff = array_diff_key($callableReflection->getParameters(), $args);
         if (! empty($diff)) {
             /** @var \ReflectionParameter $parameter */
             $parameter = reset($diff);
