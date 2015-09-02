@@ -23,13 +23,13 @@ class NumericArrayResolver implements ParameterResolver
         array $providedParameters,
         array $resolvedParameters
     ) {
-        foreach ($providedParameters as $key => $value) {
-            // Skip parameters indexed by string key, or already resolved
-            if (!is_int($key) || array_key_exists($key, $resolvedParameters)) {
-                continue;
-            }
+        // Skip parameters already resolved
+        $providedParameters = array_diff_key($providedParameters, $resolvedParameters);
 
-            $resolvedParameters[$key] = $value;
+        foreach ($providedParameters as $key => $value) {
+            if (is_int($key)) {
+                $resolvedParameters[$key] = $value;
+            }
         }
 
         return $resolvedParameters;
