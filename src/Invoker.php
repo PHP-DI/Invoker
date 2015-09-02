@@ -178,28 +178,14 @@ class Invoker implements InvokerInterface
 
     private function assertMandatoryParametersAreResolved($parameters, ReflectionFunctionAbstract $reflection)
     {
-        $parameterCount = $reflection->getNumberOfParameters();
+        $diff = array_diff_key($reflection->getParameters(), $parameters);
 
-        $i = 0;
-        foreach ($parameters as $key => $parameter) {
-            if ($key !== $i) {
-                $reflectionParameters = $reflection->getParameters();
-                $parameter = $reflectionParameters[$i];
-                throw new NotEnoughParametersException(sprintf(
-                    'Unable to invoke the callable because no value was given for parameter %d ($%s)',
-                    $i + 1,
-                    $parameter->name
-                ));
-            }
-            $i++;
-        }
-
-        if ($i < $parameterCount) {
-            $reflectionParameters = $reflection->getParameters();
-            $parameter = $reflectionParameters[$i];
+        if (! empty($diff)) {
+            /** @var \ReflectionParameter $parameter */
+            $parameter = reset($diff);
             throw new NotEnoughParametersException(sprintf(
                 'Unable to invoke the callable because no value was given for parameter %d ($%s)',
-                $i + 1,
+                $parameter->getPosition() + 1,
                 $parameter->name
             ));
         }

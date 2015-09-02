@@ -28,13 +28,20 @@ class ResolverChain implements ParameterResolver
         array $providedParameters,
         array $resolvedParameters
     ) {
+        $reflectionParameters = $reflection->getParameters();
+
         foreach ($this->resolvers as $resolver) {
-            // TODO optimize: stop traversing once all parameters are resolved
             $resolvedParameters = $resolver->getParameters(
                 $reflection,
                 $providedParameters,
                 $resolvedParameters
             );
+
+            $diff = array_diff_key($reflectionParameters, $resolvedParameters);
+            if (empty($diff)) {
+                // Stop traversing: all parameters are resolved
+                return $resolvedParameters;
+            }
         }
 
         return $resolvedParameters;
