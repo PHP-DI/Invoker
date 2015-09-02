@@ -50,10 +50,10 @@ class Invoker implements InvokerInterface
 
         $args = $this->parameterResolver->getParameters($callableReflection, $parameters, array());
 
-        $this->assertMandatoryParametersAreResolved($args, $callableReflection);
-
         // Sort by array key because invokeArgs ignores numeric keys
         ksort($args);
+
+        $this->assertMandatoryParametersAreResolved($args, $callableReflection);
 
         return call_user_func_array($callable, $args);
     }
@@ -178,20 +178,30 @@ class Invoker implements InvokerInterface
 
     private function assertMandatoryParametersAreResolved($parameters, ReflectionFunctionAbstract $reflection)
     {
-        $parameterCount = $reflection->getNumberOfRequiredParameters();
+        $parameterCount = $reflection->getNumberOfParameters();
 
-        // TODO is there a more efficient way?
-        for ($i = 0; $i < $parameterCount; $i++) {
-            if (! array_key_exists($i, $parameters)) {
+        $i = 0;
+        foreach ($parameters as $key => $parameter) {
+            if ($key !== $i) {
                 $reflectionParameters = $reflection->getParameters();
                 $parameter = $reflectionParameters[$i];
-
                 throw new NotEnoughParametersException(sprintf(
                     'Unable to invoke the callable because no value was given for parameter %d ($%s)',
                     $i + 1,
                     $parameter->name
                 ));
             }
+            $i++;
+        }
+
+        if ($i < $parameterCount) {
+            $reflectionParameters = $reflection->getParameters();
+            $parameter = $reflectionParameters[$i];
+            throw new NotEnoughParametersException(sprintf(
+                'Unable to invoke the callable because no value was given for parameter %d ($%s)',
+                $i + 1,
+                $parameter->name
+            ));
         }
     }
 }

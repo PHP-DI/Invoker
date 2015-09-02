@@ -3,6 +3,7 @@
 namespace Invoker\Test;
 
 use Invoker\Invoker;
+use Invoker\ParameterResolver\AssociativeArrayResolver;
 use Invoker\ParameterResolver\Container\ParameterNameContainerResolver;
 use Invoker\ParameterResolver\Container\TypeHintContainerResolver;
 use Invoker\Test\Mock\ArrayContainer;
@@ -80,6 +81,19 @@ class InvokerTest extends \PHPUnit_Framework_TestCase
     public function should_throw_if_no_value_for_parameter()
     {
         $this->invoker->call(function ($foo, $bar, $baz) {}, array(
+            'foo' => 'foo',
+            'baz' => 'baz',
+        ));
+    }
+
+    /**
+     * @test
+     * @expectedException \Invoker\Exception\NotEnoughParametersException
+     * @expectedExceptionMessage Unable to invoke the callable because no value was given for parameter 2 ($bar)
+     */
+    public function should_throw_if_no_value_for_parameter_even_with_trailing_optional_parameters()
+    {
+        $this->invoker->call(function ($foo, $bar, $baz = null) {}, array(
             'foo' => 'foo',
             'baz' => 'baz',
         ));
@@ -263,6 +277,35 @@ class InvokerTest extends \PHPUnit_Framework_TestCase
         // entry exist (because we are calling a static method)
         $result = $this->invoker->call(array('Invoker\Test\InvokerTestStaticFixture', 'foo'));
         $this->assertEquals('bar', $result);
+    }
+
+    /**
+     * @test
+     * @expectedException \Invoker\Exception\NotEnoughParametersException
+     * @expectedExceptionMessage Unable to invoke the callable because no value was given for parameter 2 ($bar)
+     */
+    public function should_throw_if_no_value_for_optional_parameter_1()
+    {
+        // Create without the DefaultValueResolver
+        $this->invoker = new Invoker(new AssociativeArrayResolver, $this->container);
+        $this->invoker->call(function ($foo, $bar = null) {}, array(
+            'foo' => 'foo',
+        ));
+    }
+
+    /**
+     * @test
+     * @expectedException \Invoker\Exception\NotEnoughParametersException
+     * @expectedExceptionMessage Unable to invoke the callable because no value was given for parameter 2 ($bar)
+     */
+    public function should_throw_if_no_value_for_optional_parameter_2()
+    {
+        // Create without the DefaultValueResolver
+        $this->invoker = new Invoker(new AssociativeArrayResolver, $this->container);
+        $this->invoker->call(function ($foo, $bar = null, $baz = null) {}, array(
+            'foo' => 'foo',
+            'baz' => 'baz',
+        ));
     }
 
     private function assertWasCalled(CallableSpy $callableSpy)
