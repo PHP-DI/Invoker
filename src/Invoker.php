@@ -55,23 +55,7 @@ class Invoker implements InvokerInterface
         // Sort by array key because invokeArgs ignores numeric keys
         ksort($args);
 
-        if ($callableReflection instanceof \ReflectionFunction) {
-            return $callableReflection->invokeArgs($args);
-        }
-
-        /** @var \ReflectionMethod $callableReflection */
-        if ($callableReflection->isStatic()) {
-            // Static method
-            $object = null;
-        } elseif (is_object($callable)) {
-            // Callable object
-            $object = $callable;
-        } else {
-            // Object method
-            $object = $callable[0];
-        }
-
-        return $callableReflection->invokeArgs($object, $args);
+        return call_user_func_array($callable, $args);
     }
 
     /**
