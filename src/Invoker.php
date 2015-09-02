@@ -11,7 +11,6 @@ use Invoker\ParameterResolver\NumericArrayResolver;
 use Invoker\ParameterResolver\ParameterResolver;
 use Invoker\ParameterResolver\ResolverChain;
 use Invoker\Reflection\CallableReflection;
-use ReflectionFunctionAbstract;
 
 /**
  * Invoke a callable.
@@ -44,16 +43,32 @@ class Invoker implements InvokerInterface
         if ($this->container) {
             $callable = $this->resolveCallableFromContainer($callable);
         }
-        $this->assertIsCallable($callable);
+
+        if (! is_callable($callable)) {
+            throw new NotCallableException(sprintf(
+                '%s is not a callable',
+                is_object($callable) ? 'Instance of ' . get_class($callable) : var_export($callable, true)
+            ));
+        }
 
         $callableReflection = CallableReflection::create($callable);
 
         $args = $this->parameterResolver->getParameters($callableReflection, $parameters, array());
 
-        // Sort by array key because invokeArgs ignores numeric keys
+        // Sort by array key because call_user_func_array ignores numeric keys
         ksort($args);
 
-        $this->assertMandatoryParametersAreResolved($args, $callableReflection);
+        // Check all parameters are resolved
+        $diff = array_diff_key($callableReflection->getParameters(), $parameters);
+        if (! empty($diff)) {
+            /** @var \ReflectionParameter $parameter */
+            $parameter = reset($diff);
+            throw new NotEnoughParametersException(sprintf(
+                'Unable to invoke the callable because no value was given for parameter %d ($%s)',
+                $parameter->getPosition() + 1,
+                $parameter->name
+            ));
+        }
 
         return call_user_func_array($callable, $args);
     }
@@ -151,20 +166,6 @@ class Invoker implements InvokerInterface
     }
 
     /**
-     * @param callable $callable
-     * @throws NotCallableException
-     */
-    private function assertIsCallable($callable)
-    {
-        if (! is_callable($callable)) {
-            throw new NotCallableException(sprintf(
-                '%s is not a callable',
-                is_object($callable) ? 'Instance of ' . get_class($callable) : var_export($callable, true)
-            ));
-        }
-    }
-
-    /**
      * Check if the callable represents a static call to a non-static method.
      *
      * @param mixed $callable
@@ -180,20 +181,5 @@ class Invoker implements InvokerInterface
         }
 
         return false;
-    }
-
-    private function assertMandatoryParametersAreResolved($parameters, ReflectionFunctionAbstract $reflection)
-    {
-        $diff = array_diff_key($reflection->getParameters(), $parameters);
-
-        if (! empty($diff)) {
-            /** @var \ReflectionParameter $parameter */
-            $parameter = reset($diff);
-            throw new NotEnoughParametersException(sprintf(
-                'Unable to invoke the callable because no value was given for parameter %d ($%s)',
-                $parameter->getPosition() + 1,
-                $parameter->name
-            ));
-        }
     }
 }
