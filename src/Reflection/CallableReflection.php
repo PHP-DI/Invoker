@@ -22,16 +22,16 @@ class CallableReflection
      */
     public static function create($callable)
     {
+        // Closure
+        if ($callable instanceof \Closure) {
+            return new \ReflectionFunction($callable);
+        }
+
         // Array callable
         if (is_array($callable)) {
             list($class, $method) = $callable;
 
             return new \ReflectionMethod($class, $method);
-        }
-
-        // Closure
-        if ($callable instanceof \Closure) {
-            return new \ReflectionFunction($callable);
         }
 
         // Callable object (i.e. implementing __invoke())
