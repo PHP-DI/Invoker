@@ -95,6 +95,11 @@ class Invoker implements InvokerInterface
      */
     private function resolveCallableFromContainer($callable)
     {
+        // Shortcut for a very common use case
+        if ($callable instanceof \Closure) {
+            return $callable;
+        }
+
         $isStaticCallToNonStaticMethod = false;
 
         // If it's already a callable there is nothing to do
@@ -121,6 +126,7 @@ class Invoker implements InvokerInterface
         // e.g. ['some-container-entry', 'methodToCall']
         if (is_array($callable) && is_string($callable[0])) {
             if ($this->container->has($callable[0])) {
+                // Replace the container entry name by the actual object
                 $callable[0] = $this->container->get($callable[0]);
                 return $callable;
             } elseif ($isStaticCallToNonStaticMethod) {
