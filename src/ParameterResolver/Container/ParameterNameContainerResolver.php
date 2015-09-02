@@ -31,12 +31,14 @@ class ParameterNameContainerResolver implements ParameterResolver
         array $providedParameters,
         array $resolvedParameters
     ) {
-        foreach ($reflection->getParameters() as $index => $parameter) {
-            if (array_key_exists($index, $resolvedParameters)) {
-                // Skip already resolved parameters
-                continue;
-            }
+        $parameters = $reflection->getParameters();
 
+        // Skip parameters already resolved
+        if (! empty($resolvedParameters)) {
+            $parameters = array_diff_key($parameters, $resolvedParameters);
+        }
+
+        foreach ($parameters as $index => $parameter) {
             $name = $parameter->name;
 
             if ($name && $this->container->has($name)) {

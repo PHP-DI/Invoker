@@ -20,7 +20,9 @@ class DefaultValueResolver implements ParameterResolver
         $parameters = $reflection->getParameters();
 
         // Skip parameters already resolved
-        $parameters = array_diff_key($parameters, $resolvedParameters);
+        if (! empty($resolvedParameters)) {
+            $parameters = array_diff_key($parameters, $resolvedParameters);
+        }
 
         foreach ($parameters as $index => $parameter) {
             /** @var \ReflectionParameter $parameter */
