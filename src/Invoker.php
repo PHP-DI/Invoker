@@ -40,6 +40,10 @@ class Invoker implements InvokerInterface
      */
     public function call($callable, array $parameters = array())
     {
+        if (is_string($callable) && strpos($callable, '::') !== false) {
+            $callable = explode('::', $callable, 2);
+        }
+
         if ($this->container) {
             $callable = $this->resolveCallableFromContainer($callable);
         }

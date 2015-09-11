@@ -119,6 +119,9 @@ $invoker->call(function ($name = 'world') {
 
 // Invoke any PHP callable
 $invoker->call(['MyClass', 'myStaticMethod']);
+
+// Using Class::method syntax
+$invoker->call('MyClass::myStaticMethod');
 ```
 
 Dependency injection in parameters is supported but needs to be configured with your container. Read on or jump to [*Built-in support for dependency injection*](#built-in-support-for-dependency-injection) if you are impatient.
@@ -222,6 +225,8 @@ $invoker->call(['WelcomeController', 'home']);
 $invoker = new Invoker\Invoker(null, $container);
 // Now 'WelcomeController' is resolved using the container!
 $invoker->call(['WelcomeController', 'home']);
+// Alternatively we can use the Class::method syntax
+$invoker->call('WelcomeController::home');
 ```
 
 That feature can be used as the base building block for a framework's dispatcher.
