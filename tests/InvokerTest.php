@@ -64,6 +64,16 @@ class InvokerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function should_invoke_static_method_with_scope_resolution_syntax()
+    {
+        $result = $this->invoker->call('Invoker\Test\InvokerTestStaticFixture::foo');
+
+        $this->assertEquals('bar', $result);
+    }
+
+    /**
+     * @test
+     */
     public function should_return_the_callable_return_value()
     {
         $result = $this->invoker->call(function () {
@@ -211,12 +221,40 @@ class InvokerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function should_resolve_callable_from_container_with_scope_resolution_syntax()
+    {
+        $fixture = new InvokerTestFixture;
+        $this->container->set('thing-to-call', $fixture);
+
+        $result = $this->invoker->call('thing-to-call::foo');
+
+        $this->assertEquals('bar', $result);
+        $this->assertTrue($fixture->wasCalled);
+    }
+
+    /**
+     * @test
+     */
     public function should_resolve_array_callable_from_container_with_class_name()
     {
         $fixture = new InvokerTestFixture;
         $this->container->set('Invoker\Test\InvokerTestFixture', $fixture);
 
         $result = $this->invoker->call(array('Invoker\Test\InvokerTestFixture', 'foo'));
+
+        $this->assertEquals('bar', $result);
+        $this->assertTrue($fixture->wasCalled);
+    }
+
+    /**
+     * @test
+     */
+    public function should_resolve_callable_from_container_with_class_name_in_scope_resolution_syntax()
+    {
+        $fixture = new InvokerTestFixture;
+        $this->container->set('Invoker\Test\InvokerTestFixture', $fixture);
+
+        $result = $this->invoker->call('Invoker\Test\InvokerTestFixture::foo');
 
         $this->assertEquals('bar', $result);
         $this->assertTrue($fixture->wasCalled);
