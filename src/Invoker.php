@@ -135,7 +135,7 @@ class Invoker implements InvokerInterface
                 return $this->container->get($callable);
             } else {
                 throw new NotCallableException(sprintf(
-                    '%s is neither a callable or a valid container entry',
+                    '%s is neither a callable nor a valid container entry',
                     $callable
                 ));
             }
