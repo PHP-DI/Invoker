@@ -284,7 +284,18 @@ class InvokerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      * @expectedException \Invoker\Exception\NotCallableException
-     * @expectedExceptionMessage foo is neither a callable nor a valid container entry
+     * @expectedExceptionMessage NULL is not a callable
+     */
+    public function should_throw_if_calling_non_callable_without_container_2()
+    {
+        $invoker = new Invoker();
+        $invoker->call(null);
+    }
+
+    /**
+     * @test
+     * @expectedException \Invoker\Exception\NotCallableException
+     * @expectedExceptionMessage "foo" is neither a callable nor a valid container entry
      */
     public function should_throw_if_calling_non_callable_with_container()
     {
