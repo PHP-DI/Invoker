@@ -20,6 +20,11 @@ use Invoker\Reflection\CallableReflection;
 class Invoker implements InvokerInterface
 {
     /**
+     * @var CallableResolver|null
+     */
+    private $callableResolver;
+
+    /**
      * @var ParameterResolver
      */
     private $parameterResolver;
@@ -33,6 +38,10 @@ class Invoker implements InvokerInterface
     {
         $this->parameterResolver = $parameterResolver ?: $this->createParameterResolver();
         $this->container = $container;
+
+        if ($container) {
+            $this->callableResolver = new CallableResolver($container);
+        }
     }
 
     /**
@@ -40,12 +49,8 @@ class Invoker implements InvokerInterface
      */
     public function call($callable, array $parameters = array())
     {
-        if (is_string($callable) && strpos($callable, '::') !== false) {
-            $callable = explode('::', $callable, 2);
-        }
-
-        if ($this->container) {
-            $callable = $this->resolveCallableFromContainer($callable);
+        if ($this->callableResolver) {
+            $callable = $this->callableResolver->resolve($callable);
         }
 
         if (! is_callable($callable)) {
@@ -108,82 +113,10 @@ class Invoker implements InvokerInterface
     }
 
     /**
-     * @param callable|string|array $callable
-     * @return callable
-     * @throws NotCallableException
+     * @return CallableResolver|null Returns null if no container was given in the constructor.
      */
-    private function resolveCallableFromContainer($callable)
+    public function getCallableResolver()
     {
-        // Shortcut for a very common use case
-        if ($callable instanceof \Closure) {
-            return $callable;
-        }
-
-        $isStaticCallToNonStaticMethod = false;
-
-        // If it's already a callable there is nothing to do
-        if (is_callable($callable)) {
-            $isStaticCallToNonStaticMethod = $this->isStaticCallToNonStaticMethod($callable);
-            if (! $isStaticCallToNonStaticMethod) {
-                return $callable;
-            }
-        }
-
-        // The callable is a container entry name
-        if (is_string($callable)) {
-            if ($this->container->has($callable)) {
-                return $this->container->get($callable);
-            } else {
-                throw new NotCallableException(sprintf(
-                    '"%s" is neither a callable nor a valid container entry',
-                    $callable
-                ));
-            }
-        }
-
-        // The callable is an array whose first item is a container entry name
-        // e.g. ['some-container-entry', 'methodToCall']
-        if (is_array($callable) && is_string($callable[0])) {
-            if ($this->container->has($callable[0])) {
-                // Replace the container entry name by the actual object
-                $callable[0] = $this->container->get($callable[0]);
-                return $callable;
-            } elseif ($isStaticCallToNonStaticMethod) {
-                throw new NotCallableException(sprintf(
-                    'Cannot call %s::%s() because %s() is not a static method and "%s" is not a container entry',
-                    $callable[0],
-                    $callable[1],
-                    $callable[1],
-                    $callable[0]
-                ));
-            } else {
-                throw new NotCallableException(sprintf(
-                    'Cannot call %s on %s because it is not a class nor a valid container entry',
-                    $callable[1],
-                    $callable[0]
-                ));
-            }
-        }
-
-        // Unrecognized stuff, we let it fail later
-        return $callable;
-    }
-
-    /**
-     * Check if the callable represents a static call to a non-static method.
-     *
-     * @param mixed $callable
-     * @return bool
-     */
-    private function isStaticCallToNonStaticMethod($callable)
-    {
-        if (is_array($callable) && is_string($callable[0])) {
-            list($class, $method) = $callable;
-            $reflection = new \ReflectionMethod($class, $method);
-
-            return ! $reflection->isStatic();
-        }
-
-        return false;
+        return $this->callableResolver;
     }
 }
