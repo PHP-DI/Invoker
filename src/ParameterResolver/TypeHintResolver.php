@@ -8,6 +8,8 @@ use ReflectionFunctionAbstract;
 /**
  * Inject entries using type-hints.
  *
+ * Tries to match type-hints with the parameters provided.
+ *
  * @author Felix Becker <f.becker@outlook.com>
  */
 class TypeHintResolver implements ParameterResolver
