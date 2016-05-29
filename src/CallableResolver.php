@@ -40,10 +40,7 @@ class CallableResolver
         $callable = $this->resolveFromContainer($callable);
 
         if (! is_callable($callable)) {
-            throw new NotCallableException(sprintf(
-                '%s is not a callable',
-                is_object($callable) ? 'Instance of ' . get_class($callable) : var_export($callable, true)
-            ));
+            throw NotCallableException::fromInvalidCallable($callable);
         }
 
         return $callable;
