@@ -132,6 +132,28 @@ class CallableResolverTest extends \PHPUnit_Framework_TestCase
         $resolver = new CallableResolver(new ArrayContainer);
         $resolver->resolve('foo');
     }
+
+    /**
+     * @test
+     * @expectedException \Invoker\Exception\NotCallableException
+     * @expectedExceptionMessage Instance of stdClass is not a callable
+     */
+    public function handles_objects_correctly_in_exception_message()
+    {
+        $resolver = new CallableResolver(new ArrayContainer);
+        $resolver->resolve(new \stdClass);
+    }
+
+    /**
+     * @test
+     * @expectedException \Invoker\Exception\NotCallableException
+     * @expectedExceptionMessage stdClass::test() is not a callable
+     */
+    public function handles_method_calls_correctly_in_exception_message()
+    {
+        $resolver = new CallableResolver(new ArrayContainer);
+        $resolver->resolve(array(new \stdClass, 'test'));
+    }
 }
 
 function foo()
