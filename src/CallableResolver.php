@@ -40,7 +40,7 @@ class CallableResolver
         $callable = $this->resolveFromContainer($callable);
 
         if (! is_callable($callable)) {
-            throw NotCallableException::fromInvalidCallable($callable);
+            throw NotCallableException::fromInvalidCallable($callable, true);
         }
 
         return $callable;
@@ -73,10 +73,7 @@ class CallableResolver
             if ($this->container->has($callable)) {
                 return $this->container->get($callable);
             } else {
-                throw new NotCallableException(sprintf(
-                    '"%s" is neither a callable nor a valid container entry',
-                    $callable
-                ));
+                throw NotCallableException::fromInvalidCallable($callable, true);
             }
         }
 

@@ -125,7 +125,7 @@ class CallableResolverTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      * @expectedException \Invoker\Exception\NotCallableException
-     * @expectedExceptionMessage "foo" is neither a callable nor a valid container entry
+     * @expectedExceptionMessage 'foo' is neither a callable nor a valid container entry
      */
     public function throws_resolving_non_callable_from_container()
     {

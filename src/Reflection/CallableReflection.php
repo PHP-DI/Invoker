@@ -31,6 +31,10 @@ class CallableReflection
         if (is_array($callable)) {
             list($class, $method) = $callable;
 
+            if (! method_exists($class, $method)) {
+                throw NotCallableException::fromInvalidCallable($callable);
+            }
+
             return new \ReflectionMethod($class, $method);
         }
 
