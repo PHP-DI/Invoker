@@ -53,6 +53,26 @@ class InvokerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @expectedException \Invoker\Exception\NotCallableException
+     * @expectedExceptionMessage Invoker\Test\InvokerTestFixture::bar() is not a callable.
+     */
+    public function cannot_invoke_unknown_method()
+    {
+        $this->invoker->call(array(new InvokerTestFixture, 'bar'));
+    }
+
+    /**
+     * @test
+     * @expectedException \Invoker\Exception\NotCallableException
+     * @expectedExceptionMessage Invoker\Test\InvokerTestMagicMethodFixture::foo() is not a callable. A __call() method exists but magic methods are not supported.
+     */
+    public function cannot_invoke_magic_method()
+    {
+        $this->invoker->call(array(new InvokerTestMagicMethodFixture, 'foo'));
+    }
+
+    /**
+     * @test
      */
     public function should_invoke_static_method()
     {
@@ -295,7 +315,7 @@ class InvokerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      * @expectedException \Invoker\Exception\NotCallableException
-     * @expectedExceptionMessage "foo" is neither a callable nor a valid container entry
+     * @expectedExceptionMessage 'foo' is neither a callable nor a valid container entry
      */
     public function should_throw_if_calling_non_callable_with_container()
     {
@@ -385,5 +405,18 @@ class InvokerTestStaticFixture
     public static function foo()
     {
         return 'bar';
+    }
+}
+
+class InvokerTestMagicMethodFixture
+{
+    public $wasCalled = false;
+    public function __call($name, $args)
+    {
+        if ($name === 'foo') {
+            $this->wasCalled = true;
+            return 'bar';
+        }
+        throw new \Exception('Unknown method');
     }
 }
