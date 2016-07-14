@@ -18,6 +18,10 @@ class ArrayContainer implements ContainerInterface
 
     public function get($id)
     {
+        if (!array_key_exists($id, $this->entries)) {
+            throw new NotFound;
+        }
+
         return $this->entries[$id];
     }
 
