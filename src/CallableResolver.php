@@ -3,6 +3,7 @@
 namespace Invoker;
 
 use Interop\Container\ContainerInterface;
+use Interop\Container\Exception\NotFoundException;
 use Invoker\Exception\NotCallableException;
 
 /**
@@ -70,9 +71,9 @@ class CallableResolver
 
         // The callable is a container entry name
         if (is_string($callable)) {
-            if ($this->container->has($callable)) {
+            try {
                 return $this->container->get($callable);
-            } else {
+            } catch (NotFoundException $e) {
                 throw NotCallableException::fromInvalidCallable($callable, true);
             }
         }
@@ -80,19 +81,20 @@ class CallableResolver
         // The callable is an array whose first item is a container entry name
         // e.g. ['some-container-entry', 'methodToCall']
         if (is_array($callable) && is_string($callable[0])) {
-            if ($this->container->has($callable[0])) {
+            try {
                 // Replace the container entry name by the actual object
                 $callable[0] = $this->container->get($callable[0]);
                 return $callable;
-            } elseif ($isStaticCallToNonStaticMethod) {
-                throw new NotCallableException(sprintf(
-                    'Cannot call %s::%s() because %s() is not a static method and "%s" is not a container entry',
-                    $callable[0],
-                    $callable[1],
-                    $callable[1],
-                    $callable[0]
-                ));
-            } else {
+            } catch (NotFoundException $e) {
+                if ($isStaticCallToNonStaticMethod) {
+                    throw new NotCallableException(sprintf(
+                        'Cannot call %s::%s() because %s() is not a static method and "%s" is not a container entry',
+                        $callable[0],
+                        $callable[1],
+                        $callable[1],
+                        $callable[0]
+                    ));
+                }
                 throw new NotCallableException(sprintf(
                     'Cannot call %s on %s because it is not a class nor a valid container entry',
                     $callable[1],
