@@ -3,8 +3,8 @@ declare(strict_types = 1);
 
 namespace Invoker\Test\Mock;
 
-use Interop\Container\Exception\NotFoundException;
+use Psr\Container\NotFoundExceptionInterface;
 
-class NotFound extends \Exception implements NotFoundException
+class NotFound extends \Exception implements NotFoundExceptionInterface
 {
 }

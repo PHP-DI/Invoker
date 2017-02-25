@@ -2,7 +2,6 @@
 
 namespace Invoker;
 
-use Interop\Container\ContainerInterface;
 use Invoker\Exception\NotCallableException;
 use Invoker\Exception\NotEnoughParametersException;
 use Invoker\ParameterResolver\AssociativeArrayResolver;
@@ -11,6 +10,7 @@ use Invoker\ParameterResolver\NumericArrayResolver;
 use Invoker\ParameterResolver\ParameterResolver;
 use Invoker\ParameterResolver\ResolverChain;
 use Invoker\Reflection\CallableReflection;
+use Psr\Container\ContainerInterface;
 
 /**
  * Invoke a callable.

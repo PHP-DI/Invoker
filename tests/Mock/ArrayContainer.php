@@ -2,7 +2,7 @@
 
 namespace Invoker\Test\Mock;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 
 /**
  * Simple container.

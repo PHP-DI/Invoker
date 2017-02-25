@@ -164,12 +164,12 @@ Rather than have you re-implement support for dependency injection with differen
 
     In this example it will `->get('twig')` from the container and inject it.
 
-These resolvers can work with any dependency injection container compliant with [container-interop](https://github.com/container-interop/container-interop). If you container is not compliant you can use the [Acclimate](https://github.com/jeremeamia/acclimate-container) package.
+These resolvers can work with any dependency injection container compliant with [PSR-11](http://www.php-fig.org/psr/psr-11/).
 
 Setting up those resolvers is simple:
 
 ```php
-// $container must be an instance of Interop\Container\ContainerInterface
+// $container must be an instance of Psr\Container\ContainerInterface
 $container = ...
 
 $containerResolver = new TypeHintContainerResolver($container);
@@ -231,4 +231,4 @@ $invoker->call('WelcomeController::home');
 
 That feature can be used as the base building block for a framework's dispatcher.
 
-Again, any [container-interop](https://github.com/container-interop/container-interop) compliant container can be provided, and [Acclimate](https://github.com/jeremeamia/acclimate-container) can be used for incompatible containers.
+Again, any [PSR-11](http://www.php-fig.org/psr/psr-11/) compliant container can be provided.
