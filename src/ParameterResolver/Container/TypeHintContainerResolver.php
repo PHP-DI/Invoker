@@ -2,8 +2,8 @@
 
 namespace Invoker\ParameterResolver\Container;
 
-use Interop\Container\ContainerInterface;
 use Invoker\ParameterResolver\ParameterResolver;
+use Psr\Container\ContainerInterface;
 use ReflectionFunctionAbstract;
 
 /**
