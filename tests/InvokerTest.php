@@ -393,6 +393,7 @@ class InvokerTest extends \PHPUnit_Framework_TestCase
         $invoker = new Invoker();
         /** @var TestObject $testObject */
         $testObject = $invoker->create($className, $parameters);
+        $this->assertInstanceOf($className, $testObject);
         $this->assertSame($parameters['a'], $testObject->getA());
         $this->assertSame($parameters['b'], $testObject->getB());
         $this->assertSame($parameters['c'], $testObject->getC());
