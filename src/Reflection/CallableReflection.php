@@ -32,6 +32,12 @@ class CallableReflection
             list($class, $method) = $callable;
 
             if (! method_exists($class, $method)) {
+                if ('__construct' === $method) {
+                    return new \ReflectionFunction(function () use ($class) {
+                        return new $class;
+                    });
+                }
+                
                 throw NotCallableException::fromInvalidCallable($callable);
             }
 

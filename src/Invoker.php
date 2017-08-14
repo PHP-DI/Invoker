@@ -60,6 +60,22 @@ class Invoker implements InvokerInterface
             ));
         }
 
+        return call_user_func_array($callable, $this->getArgs($callable, $parameters));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function create($className, array $parameters = array())
+    {
+        $className = (string) $className;
+        $classReflection = new \ReflectionClass($className);
+        
+        return $classReflection->newInstanceArgs($this->getArgs(array($className, '__construct'), $parameters));
+    }
+    
+    private function getArgs($callable, array $parameters)
+    {
         $callableReflection = CallableReflection::create($callable);
 
         $args = $this->parameterResolver->getParameters($callableReflection, $parameters, array());
@@ -78,8 +94,8 @@ class Invoker implements InvokerInterface
                 $parameter->name
             ));
         }
-
-        return call_user_func_array($callable, $args);
+        
+        return $args;
     }
 
     /**

@@ -377,6 +377,39 @@ class InvokerTest extends \PHPUnit_Framework_TestCase
         ));
     }
 
+    /**
+     * @test
+     */
+    public function should_create_object()
+    {
+        $className = 'Invoker\Test\TestObject';
+        $parameters = array(
+            'd' => 'd value',
+            'b' => new \stdClass(),
+            'a' => 'a value',
+            'c' => 'c value',
+        );
+        
+        $invoker = new Invoker();
+        /** @var TestObject $testObject */
+        $testObject = $invoker->create($className, $parameters);
+        $this->assertInstanceOf($className, $testObject);
+        $this->assertSame($parameters['a'], $testObject->getA());
+        $this->assertSame($parameters['b'], $testObject->getB());
+        $this->assertSame($parameters['c'], $testObject->getC());
+    }
+
+    /**
+     * @test
+     */
+    public function should_create_object_without_constructor()
+    {
+        $className = 'Invoker\Test\TestObjectWithoutConstructor';
+        $invoker = new Invoker();
+        $object = $invoker->create($className);
+        $this->assertInstanceOf($className, $object);
+    }
+        
     private function assertWasCalled(CallableSpy $callableSpy)
     {
         $this->assertEquals(1, $callableSpy->getCallCount(), 'The callable should be called once');
