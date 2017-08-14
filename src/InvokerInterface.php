@@ -26,4 +26,13 @@ interface InvokerInterface
      * @throws NotEnoughParametersException
      */
     public function call($callable, array $parameters = array());
+
+    /**
+     * Create instance of the given class using the given parameters.
+     * 
+     * @param string $className
+     * @param array  $parameters
+     * @return object
+     */
+    public function create($className, array $parameters = array());
 }
