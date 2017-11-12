@@ -5,8 +5,9 @@ namespace Invoker\Test;
 use Invoker\CallableResolver;
 use Invoker\Test\Mock\ArrayContainer;
 use Invoker\Test\Mock\CallableSpy;
+use PHPUnit\Framework\TestCase;
 
-class CallableResolverTest extends \PHPUnit_Framework_TestCase
+class CallableResolverTest extends TestCase
 {
     /**
      * @var CallableResolver

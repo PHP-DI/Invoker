@@ -4,8 +4,9 @@ namespace Invoker\Test\ParameterResolver\Container;
 
 use Invoker\ParameterResolver\Container\ParameterNameContainerResolver;
 use Invoker\Test\Mock\ArrayContainer;
+use PHPUnit\Framework\TestCase;
 
-class ParameterNameContainerResolverTest extends \PHPUnit_Framework_TestCase
+class ParameterNameContainerResolverTest extends TestCase
 {
     /**
      * @var ParameterNameContainerResolver
