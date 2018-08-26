@@ -2,12 +2,14 @@
 
 namespace Invoker\ParameterResolver;
 
-use Invoker\Reflection\CallableReflection;
+use PHPUnit\Framework\TestCase;
+use ReflectionFunction;
 use ReflectionParameter;
 
 /**
+ * @requires PHP 5.6
  */
-class CallbackResolverTest extends \PHPUnit_Framework_TestCase
+class CallbackResolverTest extends TestCase
 {
     /**
      * @return array
@@ -53,7 +55,7 @@ class CallbackResolverTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame(
             $expected,
-            $resolver->getParameters(CallableReflection::create($callable), $provided, $resolved)
+            $resolver->getParameters(new ReflectionFunction($callable), $provided, $resolved)
         );
     }
 }
