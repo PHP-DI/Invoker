@@ -4,10 +4,13 @@
 namespace Invoker\ParameterResolver;
 
 use Invoker\Invoker;
+use PHPUnit\Framework\TestCase;
+use ReflectionFunction;
 
 /**
+ * @requires PHP 5.6
  */
-class VariadicResolverTest extends \PHPUnit_Framework_TestCase
+class VariadicResolverTest extends TestCase
 {
     /**
      * @covers VariadicResolver::__invoke
@@ -19,7 +22,7 @@ class VariadicResolverTest extends \PHPUnit_Framework_TestCase
         $callable = function($p1, ...$p2) {
             return \func_get_args();
         };
-        $ref      = new \ReflectionFunction($callable);
+        $ref      = new ReflectionFunction($callable);
 
         // parameter provided as array
         $provided = ['p2' => ['P21', 'P22'], 'p1' => 'P1'];
