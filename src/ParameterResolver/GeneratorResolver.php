@@ -40,9 +40,9 @@ class GeneratorResolver implements ParameterResolver
 
         // 2. Iterate over unresolved parameters and resolve them with the provided generator
         $resolvedByGenerator = [];
-        foreach ($parameters as $index => $parameter) {
-            foreach (call_user_func($this->generator, $parameter, $providedParameters) as $value) {
-                $resolvedByGenerator[$index] = $value;
+        foreach ($parameters as $position => $parameter) {
+            foreach (call_user_func($this->generator, $parameter, $providedParameters) as $index => $value) {
+                $resolvedByGenerator[$position + $index] = $value;
             }
         }
 

@@ -9,7 +9,7 @@ use ReflectionParameter;
  *
  * @see http://php.net/manual/functions.arguments.php#functions.variable-arg-list
  */
-class VariadicResolver extends CallbackResolver
+class VariadicResolver extends GeneratorResolver
 {
     /**
      * @inheritdoc
@@ -20,22 +20,17 @@ class VariadicResolver extends CallbackResolver
     }
 
     /**
-     * @param array               $provided
-     * @param ReflectionParameter ...$parameters
+     * @param ReflectionParameter $parameter
+     * @param array                $provided
      *
-     * @return array
+     * @return \Generator
      */
-    public function __invoke(array $provided, ReflectionParameter ...$parameters)
+    public function __invoke(ReflectionParameter $parameter, array $provided)
     {
-        foreach ($parameters as $parameter) {
-            if ($parameter->isVariadic() && array_key_exists($parameter->getName(), $provided)) {
-                $resolved = [];
-                foreach (array_values((array)$provided[$parameter->getName()]) as $i => $value) {
-                    $resolved[$parameter->getPosition() + $i] = $value;
-                }
-                return $resolved;
+        if ($parameter->isVariadic() && array_key_exists($parameter->getName(), $provided)) {
+            foreach (array_values((array)$provided[$parameter->getName()]) as $value) {
+                yield $value;
             }
         }
-        return [];
     }
 }
