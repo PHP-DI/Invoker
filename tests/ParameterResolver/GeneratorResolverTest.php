@@ -90,7 +90,6 @@ class GeneratorResolverTest extends TestCase
         $container = new ArrayContainer($entries);
         return [
             'class'     => $this->classes($container)[$class],
-            'callback'  => $this->callbacks($container)[$class],
             'generator' => $this->generators($container)[$class],
         ];
     }
@@ -181,111 +180,5 @@ class GeneratorResolverTest extends TestCase
         return array_map(function(callable $generator) {
             return new GeneratorResolver($generator);
         }, $generators);
-    }
-
-    /**
-     * @param ContainerInterface $container
-     *
-     * @return ParameterResolver[]
-     */
-    private function callbacks(ContainerInterface $container)
-    {
-        $callbacks = [
-
-            AssociativeArrayResolver::class => function (
-                array $provided,
-                ReflectionParameter ...$parameters
-            ) {
-                $resolved = [];
-                foreach ($parameters as $index => $parameter) {
-                    if (array_key_exists($parameter->name, $provided)) {
-                        $resolved[$index] = $provided[$parameter->name];
-                    }
-                }
-
-                return $resolved;
-            },
-
-            NumericArrayResolver::class     => function (
-                array $provided,
-                ReflectionParameter ...$parameters
-            ) {
-                $resolved = [];
-                foreach (array_keys($parameters) as $index) {
-                    if (array_key_exists($index, $provided)) {
-                        $resolved[$index] = $provided[$index];
-                    }
-                }
-
-                return $resolved;
-            },
-
-            TypeHintResolver::class         => function (
-                array $provided,
-                ReflectionParameter ...$parameters
-            ) {
-                $resolved = [];
-                foreach ($parameters as $index => $parameter) {
-                    if (($class = $parameter->getClass()) && array_key_exists($class->name, $provided)) {
-                        $resolved[$index] = $provided[$class->name];
-                    }
-                }
-
-                return $resolved;
-            },
-
-            DefaultValueResolver::class => function (
-                array $provided,
-                ReflectionParameter ...$parameters
-            ) {
-                $resolved = [];
-                foreach ($parameters as $index => $parameter) {
-                    if ($parameter->isOptional()) {
-                        try {
-                            $resolved[$index] = $parameter->getDefaultValue();
-                        } catch (\ReflectionException $e) {
-                            // Can't get default values from PHP internal classes and functions
-                        }
-                    }
-                }
-
-                return $resolved;
-            },
-
-            TypeHintContainerResolver::class => function (
-                array $provided,
-                ReflectionParameter ...$parameters
-            ) use (
-                $container
-            ) {
-                $resolved = [];
-                foreach ($parameters as $index => $parameter) {
-                    if (($class = $parameter->getClass()) && $container->has($class->name)) {
-                        $resolved[$index] = $container->get($class->name);
-                    }
-                }
-
-                return $resolved;
-            },
-
-            ParameterNameContainerResolver::class => function (
-                array $provided,
-                ReflectionParameter ...$parameters
-            ) use ($container) {
-                $resolved = [];
-                foreach ($parameters as $index => $parameter) {
-                    if (($name = $parameter->name) && $container->has($name)) {
-                        $resolved[$index] = $container->get($name);
-                    }
-                }
-
-                return $resolved;
-            },
-
-        ];
-
-        return array_map(function(callable $callback) {
-            return new CallbackResolver($callback);
-        }, $callbacks);
     }
 }
