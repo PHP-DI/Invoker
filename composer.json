@@ -1,5 +1,8 @@
 {
-    "name": "php-di/invoker",
+    "name": "php-fn/invoker",
+    "replace": {
+        "php-di/invoker": "self.version"
+    },
     "description": "Generic and extensible callable invoker",
     "keywords": ["invoker", "dependency-injection", "dependency", "injection", "callable", "invoke"],
     "homepage": "https://github.com/PHP-DI/Invoker",
