@@ -8,8 +8,9 @@ use Invoker\ParameterResolver\Container\ParameterNameContainerResolver;
 use Invoker\ParameterResolver\Container\TypeHintContainerResolver;
 use Invoker\Test\Mock\ArrayContainer;
 use Invoker\Test\Mock\CallableSpy;
+use PHPUnit\Framework\TestCase;
 
-class InvokerTest extends \PHPUnit_Framework_TestCase
+class InvokerTest extends TestCase
 {
     /**
      * @var Invoker

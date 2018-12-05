@@ -3,8 +3,9 @@
 namespace Invoker\Test\ParameterResolver;
 
 use Invoker\ParameterResolver\TypeHintResolver;
+use PHPUnit\Framework\TestCase;
 
-class TypeHintResolverTest extends \PHPUnit_Framework_TestCase
+class TypeHintResolverTest extends TestCase
 {
     const FIXTURE = 'Invoker\Test\ParameterResolver\TypeHintResolverFixture';
 

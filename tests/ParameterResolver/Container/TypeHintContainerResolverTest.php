@@ -4,8 +4,9 @@ namespace Invoker\Test\ParameterResolver\Container;
 
 use Invoker\ParameterResolver\Container\TypeHintContainerResolver;
 use Invoker\Test\Mock\ArrayContainer;
+use PHPUnit\Framework\TestCase;
 
-class TypeHintContainerResolverTest extends \PHPUnit_Framework_TestCase
+class TypeHintContainerResolverTest extends TestCase
 {
     const FIXTURE = 'Invoker\Test\ParameterResolver\Container\TypeHintContainerResolverFixture';
 
