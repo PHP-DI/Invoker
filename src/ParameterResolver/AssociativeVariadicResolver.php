@@ -9,14 +9,20 @@ use ReflectionParameter;
  *
  * @see http://php.net/manual/functions.arguments.php#functions.variable-arg-list
  */
-class VariadicResolver extends GeneratorResolver
+class AssociativeVariadicResolver extends GeneratorResolver
 {
+    /**
+     * @var bool
+     */
+    private $cast;
+
     /**
      * @inheritdoc
      */
-    public function __construct()
+    public function __construct($cast = true)
     {
         parent::__construct($this);
+        $this->cast = $cast;
     }
 
     /**
@@ -27,8 +33,8 @@ class VariadicResolver extends GeneratorResolver
      */
     public function __invoke(ReflectionParameter $parameter, array $provided)
     {
-        if ($parameter->isVariadic() && array_key_exists($parameter->getName(), $provided)) {
-            foreach (array_values((array)$provided[$parameter->getName()]) as $value) {
+        if ($parameter->isVariadic() && array_key_exists($key = $parameter->getName(), $provided)) {
+            foreach ($this->cast ? array_values((array)$provided[$key]) : [$provided[$key]] as $value) {
                 yield $value;
             }
         }
