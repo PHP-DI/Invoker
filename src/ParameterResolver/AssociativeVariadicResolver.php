@@ -18,6 +18,8 @@ class AssociativeVariadicResolver extends GeneratorResolver
 
     /**
      * @inheritdoc
+     *
+     * @param bool $cast
      */
     public function __construct($cast = true)
     {
