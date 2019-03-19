@@ -33,5 +33,10 @@ class VariadicResolverTest extends TestCase
         $provided = ['p1' => 'P1', 'p2' => 'P2'];
         $this->assertSame([1 => 'P2', 0 => 'P1'], $resolver->getParameters($ref, $provided, []));
         $this->assertSame(['P1', 'P2'], $invoker->call($callable, $provided));
+
+        // parameter is not provided => no exception
+        $provided = ['p1' => 'P1'];
+        $this->assertSame(['P1'], $resolver->getParameters($ref, $provided, []));
+        $this->assertSame(['P1'], $invoker->call($callable, $provided));
     }
 }
