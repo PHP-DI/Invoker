@@ -2,6 +2,7 @@
 
 namespace Invoker\ParameterResolver;
 
+use Invoker\Reflection\DocBlockParams;
 use ReflectionFunctionAbstract;
 
 /**
@@ -17,7 +18,11 @@ class GeneratorResolver implements ParameterResolver
     private $generator;
 
     /**
-     * @param callable $generator function(\ReflectionParameter $parameter, array $provided = []): array
+     * @param callable $generator function(
+     *                                ReflectionParameter $parameter,
+     *                                array $provided = [],
+     *                                phpDocumentor\Reflection\DocBlock\Tags\Param $tag = null
+     *                            ): iterable
      */
     public function __construct(callable $generator)
     {
@@ -39,9 +44,11 @@ class GeneratorResolver implements ParameterResolver
         }
 
         // 2. Iterate over unresolved parameters and resolve them with the provided generator
+        $tags = iterator_to_array(new DocBlockParams($reflection));
         $resolvedByGenerator = [];
         foreach ($parameters as $position => $parameter) {
-            foreach (call_user_func($this->generator, $parameter, $providedParameters) as $index => $value) {
+            $args = [$parameter, $providedParameters, isset($tags[$parameter->getName()]) ? $tags[$parameter->getName()] : null];
+            foreach (call_user_func($this->generator, ...$args) as $index => $value) {
                 $resolvedByGenerator[$position + $index] = $value;
             }
         }

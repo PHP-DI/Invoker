@@ -6,19 +6,22 @@ use Invoker\ParameterResolver\Container\ParameterNameContainerResolver;
 use Invoker\ParameterResolver\Container\TypeHintContainerResolver;
 use Invoker\Reflection\CallableReflection;
 use Invoker\Test\Mock\ArrayContainer;
+use phpDocumentor\Reflection\DocBlock\Tags\Param;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
+use ReflectionFunction;
 use ReflectionParameter;
 
 /**
  * @requires PHP 5.6
+ * @coversDefaultClass GeneratorResolver
  */
 class GeneratorResolverTest extends TestCase
 {
     /**
      * @return array
      */
-    public function sameBehaviourProvider()
+    public function providerSameBehaviour()
     {
         return [
             'assoc' => [
@@ -58,7 +61,8 @@ class GeneratorResolverTest extends TestCase
     }
 
     /**
-     * @dataProvider sameBehaviourProvider
+     * @covers ::getParameters
+     * @dataProvider providerSameBehaviour
      *
      * @param array               $expected
      * @param ParameterResolver[] $resolvers
@@ -180,5 +184,32 @@ class GeneratorResolverTest extends TestCase
         return array_map(function(callable $generator) {
             return new GeneratorResolver($generator);
         }, $generators);
+    }
+
+    /**
+     * @covers ::getParameters
+     */
+    public function testGetParametersWithDocBlockTags()
+    {
+        $actual = (new GeneratorResolver(function(ReflectionParameter $parameter, array $provided, Param $tag = null) {
+            yield [$parameter->getName() => $tag ? [
+                'type' => (string)$tag->getType(),
+                'desc' => (string)$tag->getDescription(),
+            ] : null];
+        }))->getParameters(new ReflectionFunction(
+            /**
+             * @param string $a1
+             * @param bool $a3
+             * @param mixed ...$a4 any description
+             */
+            function($a1, $a2, $a3 = 'default', ...$a4) {}
+        ), [], []);
+
+        $this->assertEquals([
+            ['a1' => ['type' => 'string', 'desc' => '']],
+            ['a2' => null],
+            ['a3' => ['type' => 'bool', 'desc' => '']],
+            ['a4' => ['type' => 'mixed', 'desc' => 'any description']],
+        ], $actual);
     }
 }
