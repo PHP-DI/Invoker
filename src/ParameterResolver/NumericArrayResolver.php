@@ -29,7 +29,7 @@ class NumericArrayResolver implements ParameterResolver
         }
 
         foreach ($providedParameters as $key => $value) {
-            if (is_int($key)) {
+            if (is_int($key) && ! is_object($value)) {
                 $resolvedParameters[$key] = $value;
             }
         }

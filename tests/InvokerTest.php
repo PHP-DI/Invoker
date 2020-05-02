@@ -179,6 +179,49 @@ class InvokerTest extends TestCase
     /**
      * @test
      */
+    public function should_override_value_for_trailing_optional_parameters()
+    {
+        $assetions = [
+            'expected' => [
+                ["foo", 300.0, true],
+                ["foo", 50.0, true],
+                ["foo", 50.0, false],
+                ["foo", 50.0, false],
+            ],
+            'params' => [
+                ['foo' => 'foo', new \stdClass()],
+                ['foo' => 'foo', new \stdClass(), "bar" => 50.0],
+                ['foo' => 'foo', new \stdClass(), "bar" => 50.0, "baz" => false],
+                ['foo' => 'foo', "bar" => 50.0, new \stdClass(), "baz" => false],
+            ]
+        ];
+        $factory = function ($foo, $bar = 300.0, $baz = true) {
+            return [$foo, $bar, $baz];
+        };
+        foreach ($assetions['expected'] as $idx => $exp) {
+            $res = $this->invoker->call($factory, $assetions['params'][$idx]);
+            $this->assertEquals($exp, $res);
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function test_should_override_value_for_trailing_optional_parameters()
+    {
+        $res = $this->invoker->call(function ($foo, $bar = 300.0, $baz = true) {
+            return [$foo, $bar, $baz];
+        }, array(
+            'foo' => 'foo',
+            new \stdClass(),
+            'bar' => 50.0,
+        ));
+        $this->assertEquals(["foo", 50.0, true], $res);
+    }
+
+    /**
+     * @test
+     */
     public function should_do_dependency_injection_with_typehint_container_resolver()
     {
         $resolver = new TypeHintContainerResolver($this->container);
