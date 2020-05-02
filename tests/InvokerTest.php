@@ -207,21 +207,6 @@ class InvokerTest extends TestCase
     /**
      * @test
      */
-    public function test_should_override_value_for_trailing_optional_parameters()
-    {
-        $res = $this->invoker->call(function ($foo, $bar = 300.0, $baz = true) {
-            return [$foo, $bar, $baz];
-        }, array(
-            'foo' => 'foo',
-            new \stdClass(),
-            'bar' => 50.0,
-        ));
-        $this->assertEquals(["foo", 50.0, true], $res);
-    }
-
-    /**
-     * @test
-     */
     public function should_do_dependency_injection_with_typehint_container_resolver()
     {
         $resolver = new TypeHintContainerResolver($this->container);
