@@ -9,9 +9,9 @@ use Psr\Container\ContainerInterface;
  */
 class ArrayContainer implements ContainerInterface
 {
-    private $entries = array();
+    private $entries;
 
-    public function __construct(array $entries = array())
+    public function __construct(array $entries = [])
     {
         $this->entries = $entries;
     }

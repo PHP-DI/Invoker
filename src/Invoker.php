@@ -11,6 +11,7 @@ use Invoker\ParameterResolver\ParameterResolver;
 use Invoker\ParameterResolver\ResolverChain;
 use Invoker\Reflection\CallableReflection;
 use Psr\Container\ContainerInterface;
+use ReflectionParameter;
 
 /**
  * Invoke a callable.
@@ -70,7 +71,7 @@ class Invoker implements InvokerInterface
         // Check all parameters are resolved
         $diff = array_diff_key($callableReflection->getParameters(), $args);
         if (! empty($diff)) {
-            /** @var \ReflectionParameter $parameter */
+            /** @var ReflectionParameter $parameter */
             $parameter = reset($diff);
             throw new NotEnoughParametersException(sprintf(
                 'Unable to invoke the callable because no value was given for parameter %d ($%s)',
@@ -84,10 +85,8 @@ class Invoker implements InvokerInterface
 
     /**
      * Create the default parameter resolver.
-     *
-     * @return ParameterResolver
      */
-    private function createParameterResolver()
+    private function createParameterResolver(): ParameterResolver
     {
         return new ResolverChain(array(
             new NumericArrayResolver,
@@ -99,15 +98,12 @@ class Invoker implements InvokerInterface
     /**
      * @return ParameterResolver By default it's a ResolverChain
      */
-    public function getParameterResolver()
+    public function getParameterResolver(): ParameterResolver
     {
         return $this->parameterResolver;
     }
 
-    /**
-     * @return ContainerInterface|null
-     */
-    public function getContainer()
+    public function getContainer(): ?ContainerInterface
     {
         return $this->container;
     }
@@ -115,7 +111,7 @@ class Invoker implements InvokerInterface
     /**
      * @return CallableResolver|null Returns null if no container was given in the constructor.
      */
-    public function getCallableResolver()
+    public function getCallableResolver(): ?CallableResolver
     {
         return $this->callableResolver;
     }

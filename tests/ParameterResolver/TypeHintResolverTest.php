@@ -7,14 +7,14 @@ use PHPUnit\Framework\TestCase;
 
 class TypeHintResolverTest extends TestCase
 {
-    const FIXTURE = 'Invoker\Test\ParameterResolver\TypeHintResolverFixture';
+    private const FIXTURE = TypeHintResolverFixture::class;
 
     /**
      * @var TypeHintResolver
      */
     private $resolver;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->resolver = new TypeHintResolver;
     }
@@ -29,7 +29,7 @@ class TypeHintResolverTest extends TestCase
 
         $fixture = new TypeHintResolverFixture;
 
-        $parameters = $this->resolver->getParameters($reflection, array(self::FIXTURE => $fixture), array());
+        $parameters = $this->resolver->getParameters($reflection, [self::FIXTURE => $fixture], array());
 
         $this->assertCount(1, $parameters);
         $this->assertSame($fixture, $parameters[0]);
@@ -43,7 +43,7 @@ class TypeHintResolverTest extends TestCase
         $callable = function (TypeHintResolverFixture $foo) {};
         $reflection = new \ReflectionFunction($callable);
 
-        $parameters = $this->resolver->getParameters($reflection, array(), array());
+        $parameters = $this->resolver->getParameters($reflection, [], []);
 
         $this->assertCount(0, $parameters);
     }
@@ -59,7 +59,7 @@ class TypeHintResolverTest extends TestCase
         $fixture = new TypeHintResolverFixture;
 
         $resolvedParameters = array('first param value');
-        $parameters = $this->resolver->getParameters($reflection, array(self::FIXTURE => $fixture), $resolvedParameters);
+        $parameters = $this->resolver->getParameters($reflection, [self::FIXTURE => $fixture], $resolvedParameters);
 
         $this->assertSame($resolvedParameters, $parameters);
     }

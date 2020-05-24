@@ -3,6 +3,10 @@
 namespace Invoker\Reflection;
 
 use Invoker\Exception\NotCallableException;
+use ReflectionException;
+use ReflectionFunction;
+use ReflectionFunctionAbstract;
+use ReflectionMethod;
 
 /**
  * Create a reflection object from a callable.
@@ -14,43 +18,41 @@ class CallableReflection
     /**
      * @param callable $callable
      *
-     * @return \ReflectionFunctionAbstract
-     *
-     * @throws NotCallableException
+     * @throws NotCallableException|ReflectionException
      *
      * TODO Use the `callable` type-hint once support for PHP 5.4 and up.
      */
-    public static function create($callable)
+    public static function create($callable): ReflectionFunctionAbstract
     {
         // Closure
         if ($callable instanceof \Closure) {
-            return new \ReflectionFunction($callable);
+            return new ReflectionFunction($callable);
         }
 
         // Array callable
         if (is_array($callable)) {
-            list($class, $method) = $callable;
+            [$class, $method] = $callable;
 
             if (! method_exists($class, $method)) {
                 throw NotCallableException::fromInvalidCallable($callable);
             }
 
-            return new \ReflectionMethod($class, $method);
+            return new ReflectionMethod($class, $method);
         }
 
         // Callable object (i.e. implementing __invoke())
         if (is_object($callable) && method_exists($callable, '__invoke')) {
-            return new \ReflectionMethod($callable, '__invoke');
+            return new ReflectionMethod($callable, '__invoke');
         }
 
         // Callable class (i.e. implementing __invoke())
         if (is_string($callable) && class_exists($callable) && method_exists($callable, '__invoke')) {
-            return new \ReflectionMethod($callable, '__invoke');
+            return new ReflectionMethod($callable, '__invoke');
         }
 
         // Standard function
         if (is_string($callable) && function_exists($callable)) {
-            return new \ReflectionFunction($callable);
+            return new ReflectionFunction($callable);
         }
 
         throw new NotCallableException(sprintf(

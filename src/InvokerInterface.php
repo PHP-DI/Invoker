@@ -25,5 +25,5 @@ interface InvokerInterface
      * @throws NotCallableException
      * @throws NotEnoughParametersException
      */
-    public function call($callable, array $parameters = array());
+    public function call($callable, array $parameters = []);
 }

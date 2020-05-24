@@ -2,9 +2,12 @@
 
 namespace Invoker;
 
+use Closure;
 use Invoker\Exception\NotCallableException;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use ReflectionException;
+use ReflectionMethod;
 
 /**
  * Resolves a callable from a container.
@@ -30,9 +33,9 @@ class CallableResolver
      *
      * @return callable Real PHP callable.
      *
-     * @throws NotCallableException
+     * @throws NotCallableException|ReflectionException
      */
-    public function resolve($callable)
+    public function resolve($callable): callable
     {
         if (is_string($callable) && strpos($callable, '::') !== false) {
             $callable = explode('::', $callable, 2);
@@ -49,13 +52,13 @@ class CallableResolver
 
     /**
      * @param callable|string|array $callable
-     * @return callable
-     * @throws NotCallableException
+     * @return callable|mixed
+     * @throws NotCallableException|ReflectionException
      */
     private function resolveFromContainer($callable)
     {
         // Shortcut for a very common use case
-        if ($callable instanceof \Closure) {
+        if ($callable instanceof Closure) {
             return $callable;
         }
 
@@ -117,13 +120,14 @@ class CallableResolver
      * Check if the callable represents a static call to a non-static method.
      *
      * @param mixed $callable
-     * @return bool
+     *
+     * @throws ReflectionException
      */
-    private function isStaticCallToNonStaticMethod($callable)
+    private function isStaticCallToNonStaticMethod($callable): bool
     {
         if (is_array($callable) && is_string($callable[0])) {
-            list($class, $method) = $callable;
-            $reflection = new \ReflectionMethod($class, $method);
+            [$class, $method] = $callable;
+            $reflection = new ReflectionMethod($class, $method);
 
             return ! $reflection->isStatic();
         }

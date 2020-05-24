@@ -22,7 +22,7 @@ class CallableSpy
     /**
      * @var array
      */
-    private $parameters = array();
+    private $parameters = [];
 
     public static function mock($callable)
     {

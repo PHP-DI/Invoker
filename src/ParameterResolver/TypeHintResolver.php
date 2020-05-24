@@ -2,7 +2,6 @@
 
 namespace Invoker\ParameterResolver;
 
-use Invoker\ParameterResolver\ParameterResolver;
 use ReflectionFunctionAbstract;
 
 /**

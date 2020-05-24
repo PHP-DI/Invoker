@@ -16,7 +16,7 @@ class ResolverChain implements ParameterResolver
     /**
      * @var ParameterResolver[]
      */
-    private $resolvers = array();
+    private $resolvers;
 
     public function __construct(array $resolvers = array())
     {
@@ -49,20 +49,16 @@ class ResolverChain implements ParameterResolver
 
     /**
      * Push a parameter resolver after the ones already registered.
-     *
-     * @param ParameterResolver $resolver
      */
-    public function appendResolver(ParameterResolver $resolver)
+    public function appendResolver(ParameterResolver $resolver): void
     {
         $this->resolvers[] = $resolver;
     }
 
     /**
      * Insert a parameter resolver before the ones already registered.
-     *
-     * @param ParameterResolver $resolver
      */
-    public function prependResolver(ParameterResolver $resolver)
+    public function prependResolver(ParameterResolver $resolver): void
     {
         array_unshift($this->resolvers, $resolver);
     }

@@ -3,9 +3,11 @@
 namespace Invoker\Test;
 
 use Invoker\CallableResolver;
+use Invoker\Exception\NotCallableException;
 use Invoker\Test\Mock\ArrayContainer;
 use Invoker\Test\Mock\CallableSpy;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 class CallableResolverTest extends TestCase
 {
@@ -19,8 +21,9 @@ class CallableResolverTest extends TestCase
      */
     private $container;
 
-    public function setUp()
+    public function setUp(): void
     {
+        parent::setUp();
         $this->container = new ArrayContainer;
         $this->resolver = new CallableResolver($this->container);
     }
@@ -62,9 +65,9 @@ class CallableResolverTest extends TestCase
     public function resolves_invokable_class()
     {
         $callable = new CallableSpy;
-        $this->container->set('Invoker\Test\Mock\CallableSpy', $callable);
+        $this->container->set(CallableSpy::class, $callable);
 
-        $this->assertSame($callable, $this->resolver->resolve('Invoker\Test\Mock\CallableSpy'));
+        $this->assertSame($callable, $this->resolver->resolve(CallableSpy::class));
     }
 
     /**
@@ -73,9 +76,9 @@ class CallableResolverTest extends TestCase
     public function resolve_array_method_call()
     {
         $fixture = new InvokerTestFixture;
-        $this->container->set('Invoker\Test\InvokerTestFixture', $fixture);
+        $this->container->set(InvokerTestFixture::class, $fixture);
 
-        $result = $this->resolver->resolve(array('Invoker\Test\InvokerTestFixture', 'foo'));
+        $result = $this->resolver->resolve(array(InvokerTestFixture::class, 'foo'));
 
         $result();
         $this->assertTrue($fixture->wasCalled);
@@ -87,7 +90,7 @@ class CallableResolverTest extends TestCase
     public function resolve_string_method_call()
     {
         $fixture = new InvokerTestFixture;
-        $this->container->set('Invoker\Test\InvokerTestFixture', $fixture);
+        $this->container->set(InvokerTestFixture::class, $fixture);
 
         $result = $this->resolver->resolve('Invoker\Test\InvokerTestFixture::foo');
 
@@ -125,35 +128,35 @@ class CallableResolverTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Invoker\Exception\NotCallableException
-     * @expectedExceptionMessage 'foo' is neither a callable nor a valid container entry
      */
     public function throws_resolving_non_callable_from_container()
     {
+        $this->expectExceptionMessage("'foo' is neither a callable nor a valid container entry");
+        $this->expectException(NotCallableException::class);
         $resolver = new CallableResolver(new ArrayContainer);
         $resolver->resolve('foo');
     }
 
     /**
      * @test
-     * @expectedException \Invoker\Exception\NotCallableException
-     * @expectedExceptionMessage Instance of stdClass is not a callable
      */
     public function handles_objects_correctly_in_exception_message()
     {
+        $this->expectExceptionMessage("Instance of stdClass is not a callable");
+        $this->expectException(NotCallableException::class);
         $resolver = new CallableResolver(new ArrayContainer);
-        $resolver->resolve(new \stdClass);
+        $resolver->resolve(new stdClass);
     }
 
     /**
      * @test
-     * @expectedException \Invoker\Exception\NotCallableException
-     * @expectedExceptionMessage stdClass::test() is not a callable
      */
     public function handles_method_calls_correctly_in_exception_message()
     {
+        $this->expectExceptionMessage("stdClass::test() is not a callable");
+        $this->expectException(NotCallableException::class);
         $resolver = new CallableResolver(new ArrayContainer);
-        $resolver->resolve(array(new \stdClass, 'test'));
+        $resolver->resolve(array(new stdClass, 'test'));
     }
 }
 

@@ -16,10 +16,11 @@
         }
     },
     "require": {
+        "php": ">=7.3",
         "psr/container": "~1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4.8.35",
+        "phpunit/phpunit": "^9.0",
         "athletic/athletic": "~0.1.8"
     }
 }

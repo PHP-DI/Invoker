@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class TypeHintContainerResolverTest extends TestCase
 {
-    const FIXTURE = 'Invoker\Test\ParameterResolver\Container\TypeHintContainerResolverFixture';
+    private const FIXTURE = TypeHintContainerResolverFixture::class;
 
     /**
      * @var TypeHintContainerResolver
@@ -20,7 +20,7 @@ class TypeHintContainerResolverTest extends TestCase
      */
     private $container;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->container = new ArrayContainer;
         $this->resolver = new TypeHintContainerResolver($this->container);

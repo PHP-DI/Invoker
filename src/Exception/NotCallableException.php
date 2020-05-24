@@ -11,10 +11,8 @@ class NotCallableException extends InvocationException
 {
     /**
      * @param mixed $value
-     * @param bool $containerEntry
-     * @return self
      */
-    public static function fromInvalidCallable($value, $containerEntry = false)
+    public static function fromInvalidCallable($value, bool $containerEntry = false): self
     {
         if (is_object($value)) {
             $message = sprintf('Instance of %s is not a callable', get_class($value));

@@ -18,7 +18,7 @@ class ParameterNameContainerResolverTest extends TestCase
      */
     private $container;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->container = new ArrayContainer;
         $this->resolver = new ParameterNameContainerResolver($this->container);
