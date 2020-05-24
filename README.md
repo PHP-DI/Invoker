@@ -4,6 +4,7 @@ Generic and extensible callable invoker.
 
 [![Build Status](https://img.shields.io/travis/PHP-DI/Invoker.svg?style=flat-square)](https://travis-ci.org/PHP-DI/Invoker)
 [![Latest Version](https://img.shields.io/github/release/PHP-DI/invoker.svg?style=flat-square)](https://packagist.org/packages/PHP-DI/invoker)
+[![Total Downloads](https://img.shields.io/packagist/dt/php-di/invoker.svg?style=flat-square)](https://packagist.org/packages/php-di/invoker)
 
 ## Why?
 
