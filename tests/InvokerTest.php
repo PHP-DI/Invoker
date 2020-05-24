@@ -287,6 +287,29 @@ class InvokerTest extends TestCase
     }
 
     /**
+     * Mixing named parameters with positioned parameters is a really bad idea.
+     * When that happens, the positioned parameters have the highest priority and will
+     * override named parameters in case of conflicts.
+     *
+     * Note that numeric array indexes ignore string indexes. In our example, the
+     * 'bar' value has the position `0`, which overrides the 'foo' value.
+     *
+     * @test
+     */
+    public function positioned_parameters_have_the_highest_priority()
+    {
+        $factory = function ($foo, $bar = 300) {
+            return [$foo, $bar];
+        };
+        $result = $this->invoker->call($factory, [
+            'foo' => 'foo',
+            'bar',
+        ]);
+
+        $this->assertEquals(['bar', 300], $result);
+    }
+
+    /**
      * @test
      */
     public function should_not_invoke_statically_a_non_static_method()
