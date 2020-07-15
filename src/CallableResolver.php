@@ -61,6 +61,21 @@ class CallableResolver
         if ($callable instanceof Closure) {
             return $callable;
         }
+        if (\is_string($callable) && \class_exists($callable) && \method_exists($callable, '__invoke')) {
+            return new $callable;
+        }
+        if (\is_array($callable) && \count($callable) === 2) {
+            list($class, $parameters) = $callable;
+            if (\is_string($class) && \class_exists($class) && \method_exists($class, '__callStatic')) {
+                return \Closure::fromCallable(function (...$arg) use ($class, $parameters) {
+                    if (!is_array($parameters)) {
+                        $parameters = [$parameters];
+                    }
+                    \array_push($parameters, $arg);
+                    return \forward_static_call_array([$class, '__callStatic'], $parameters);
+                });
+            }
+        }
 
         $isStaticCallToNonStaticMethod = false;
 
