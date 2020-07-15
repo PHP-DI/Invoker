@@ -129,6 +129,26 @@ class CallableResolverTest extends TestCase
     /**
      * @test
      */
+    public function resolve_invoke_class_string_factory_without_register()
+    {
+        $result = $this->resolver->resolve(InvokerTestClassString::class);
+        $this->assertInstanceOf(\StdClass::class, $result());
+    }
+
+    /**
+     * @test
+     */
+    public function resolve_magic_call_static()
+    {
+        $result = $this->resolver->resolve([InvokerTestCallStaticMagic::class, 'test']);
+        $result = $result();
+        $this->assertInstanceOf(\StdClass::class, $result);
+        $this->assertEquals('test', $result->name);
+    }
+
+    /**
+     * @test
+     */
     public function throws_resolving_non_callable_from_container()
     {
         $this->expectExceptionMessage("'foo' is neither a callable nor a valid container entry");
@@ -163,4 +183,34 @@ class CallableResolverTest extends TestCase
 function foo()
 {
     return 'bar';
+}
+
+class InvokerTestClassString
+{
+    public function __invoke()
+    {
+        return new StdClass();
+    }
+}
+
+class InvokerTestCallStaticMagic
+{
+    private $text;
+
+    final public function __construct(string $name)
+    {
+        $this->name = $name;
+    }
+
+    public function __invoke()
+    {
+        $class = new StdClass();
+        $class->name = $this->name;
+        return $class;
+    }
+
+    public static function __callStatic(string $name, array $arguments): object
+    {
+        return \call_user_func_array(new static($name), $arguments);
+    }
 }

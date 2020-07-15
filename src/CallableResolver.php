@@ -62,7 +62,9 @@ class CallableResolver
             return $callable;
         }
         if (\is_string($callable) && \class_exists($callable) && \method_exists($callable, '__invoke')) {
-            return new $callable;
+            if (!$this->container->has($callable)) {
+                return new $callable;
+            }
         }
         if (\is_array($callable) && \count($callable) === 2) {
             list($class, $parameters) = $callable;
