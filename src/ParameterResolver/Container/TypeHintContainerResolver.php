@@ -5,6 +5,7 @@ namespace Invoker\ParameterResolver\Container;
 use Invoker\ParameterResolver\ParameterResolver;
 use Psr\Container\ContainerInterface;
 use ReflectionFunctionAbstract;
+use ReflectionNamedType;
 
 /**
  * Inject entries from a DI container using the type-hints.
@@ -39,10 +40,24 @@ class TypeHintContainerResolver implements ParameterResolver
         }
 
         foreach ($parameters as $index => $parameter) {
-            $parameterClass = $parameter->getClass();
+            $parameterType = $parameter->getType();
+            if (!$parameterType) {
+                // No type
+                continue;
+            }
+            if ($parameterType->isBuiltin()) {
+                // Primitive types are not supported
+                continue;
+            }
+            if (!$parameterType instanceof ReflectionNamedType) {
+                // Union types are not supported
+                continue;
+            }
 
-            if ($parameterClass && $this->container->has($parameterClass->name)) {
-                $resolvedParameters[$index] = $this->container->get($parameterClass->name);
+            $parameterClass = $parameterType->getName();
+
+            if ($this->container->has($parameterClass)) {
+                $resolvedParameters[$index] = $this->container->get($parameterClass);
             }
         }
 

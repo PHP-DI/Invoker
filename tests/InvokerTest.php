@@ -314,7 +314,7 @@ class InvokerTest extends TestCase
      */
     public function should_not_invoke_statically_a_non_static_method()
     {
-        $this->expectExceptionMessage("Cannot call Invoker\Test\InvokerTestFixture::foo() because foo() is not a static method and \"Invoker\Test\InvokerTestFixture\" is not a container entry");
+        $this->expectExceptionMessage("Cannot call foo() on Invoker\Test\InvokerTestFixture because it is not a class nor a valid container entry");
         $this->expectException(NotCallableException::class);
         $this->invoker->call([InvokerTestFixture::class, 'foo']);
     }

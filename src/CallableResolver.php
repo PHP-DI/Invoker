@@ -62,12 +62,10 @@ class CallableResolver
             return $callable;
         }
 
-        $isStaticCallToNonStaticMethod = false;
-
         // If it's already a callable there is nothing to do
         if (is_callable($callable)) {
-            $isStaticCallToNonStaticMethod = $this->isStaticCallToNonStaticMethod($callable);
-            if (! $isStaticCallToNonStaticMethod) {
+            // TODO with PHP 8 that should not be necessary to check this anymore
+            if (! $this->isStaticCallToNonStaticMethod($callable)) {
                 return $callable;
             }
         }
@@ -95,17 +93,8 @@ class CallableResolver
                 if ($this->container->has($callable[0])) {
                     throw $e;
                 }
-                if ($isStaticCallToNonStaticMethod) {
-                    throw new NotCallableException(sprintf(
-                        'Cannot call %s::%s() because %s() is not a static method and "%s" is not a container entry',
-                        $callable[0],
-                        $callable[1],
-                        $callable[1],
-                        $callable[0]
-                    ));
-                }
                 throw new NotCallableException(sprintf(
-                    'Cannot call %s on %s because it is not a class nor a valid container entry',
+                    'Cannot call %s() on %s because it is not a class nor a valid container entry',
                     $callable[1],
                     $callable[0]
                 ));

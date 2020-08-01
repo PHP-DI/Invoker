@@ -3,6 +3,7 @@
 namespace Invoker\ParameterResolver;
 
 use ReflectionFunctionAbstract;
+use ReflectionNamedType;
 
 /**
  * Inject entries using type-hints.
@@ -26,10 +27,24 @@ class TypeHintResolver implements ParameterResolver
         }
 
         foreach ($parameters as $index => $parameter) {
-            $parameterClass = $parameter->getClass();
+            $parameterType = $parameter->getType();
+            if (!$parameterType) {
+                // No type
+                continue;
+            }
+            if ($parameterType->isBuiltin()) {
+                // Primitive types are not supported
+                continue;
+            }
+            if (!$parameterType instanceof ReflectionNamedType) {
+                // Union types are not supported
+                continue;
+            }
 
-            if ($parameterClass && array_key_exists($parameterClass->name, $providedParameters)) {
-                $resolvedParameters[$index] = $providedParameters[$parameterClass->name];
+            $parameterClass = $parameterType->getName();
+
+            if (array_key_exists($parameterClass, $providedParameters)) {
+                $resolvedParameters[$index] = $providedParameters[$parameterClass];
             }
         }
 
