@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Invoker\ParameterResolver;
 
@@ -11,8 +11,6 @@ use ReflectionFunctionAbstract;
  * in the parameter named `$foo`.
  *
  * Parameters that are not indexed by a string are ignored.
- *
- * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
 class AssociativeArrayResolver implements ParameterResolver
 {
@@ -20,7 +18,7 @@ class AssociativeArrayResolver implements ParameterResolver
         ReflectionFunctionAbstract $reflection,
         array $providedParameters,
         array $resolvedParameters
-    ) {
+    ): array {
         $parameters = $reflection->getParameters();
 
         // Skip parameters already resolved

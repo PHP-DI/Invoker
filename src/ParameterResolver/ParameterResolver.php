@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Invoker\ParameterResolver;
 
@@ -6,8 +6,6 @@ use ReflectionFunctionAbstract;
 
 /**
  * Resolves the parameters to use to call the callable.
- *
- * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
 interface ParameterResolver
 {
@@ -22,7 +20,6 @@ interface ParameterResolver
      * @param ReflectionFunctionAbstract $reflection Reflection object for the callable.
      * @param array $providedParameters Parameters provided by the caller.
      * @param array $resolvedParameters Parameters resolved (indexed by parameter position).
-     *
      * @return array
      */
     public function getParameters(

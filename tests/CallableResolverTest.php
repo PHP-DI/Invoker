@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Invoker\Test;
 
@@ -11,14 +11,10 @@ use stdClass;
 
 class CallableResolverTest extends TestCase
 {
-    /**
-     * @var CallableResolver
-     */
+    /** @var CallableResolver */
     private $resolver;
 
-    /**
-     * @var ArrayContainer
-     */
+    /** @var ArrayContainer */
     private $container;
 
     public function setUp(): void
@@ -53,7 +49,8 @@ class CallableResolverTest extends TestCase
      */
     public function resolves_callable_from_container()
     {
-        $callable = function () {};
+        $callable = function () {
+        };
         $this->container->set('thing-to-call', $callable);
 
         $this->assertSame($callable, $this->resolver->resolve('thing-to-call'));
@@ -78,7 +75,7 @@ class CallableResolverTest extends TestCase
         $fixture = new InvokerTestFixture;
         $this->container->set(InvokerTestFixture::class, $fixture);
 
-        $result = $this->resolver->resolve(array(InvokerTestFixture::class, 'foo'));
+        $result = $this->resolver->resolve([InvokerTestFixture::class, 'foo']);
 
         $result();
         $this->assertTrue($fixture->wasCalled);
@@ -106,7 +103,7 @@ class CallableResolverTest extends TestCase
         $fixture = new InvokerTestFixture;
         $this->container->set('thing-to-call', $fixture);
 
-        $result = $this->resolver->resolve(array('thing-to-call', 'foo'));
+        $result = $this->resolver->resolve(['thing-to-call', 'foo']);
 
         $result();
         $this->assertTrue($fixture->wasCalled);
@@ -142,7 +139,7 @@ class CallableResolverTest extends TestCase
      */
     public function handles_objects_correctly_in_exception_message()
     {
-        $this->expectExceptionMessage("Instance of stdClass is not a callable");
+        $this->expectExceptionMessage('Instance of stdClass is not a callable');
         $this->expectException(NotCallableException::class);
         $resolver = new CallableResolver(new ArrayContainer);
         $resolver->resolve(new stdClass);
@@ -153,10 +150,10 @@ class CallableResolverTest extends TestCase
      */
     public function handles_method_calls_correctly_in_exception_message()
     {
-        $this->expectExceptionMessage("stdClass::test() is not a callable");
+        $this->expectExceptionMessage('stdClass::test() is not a callable');
         $this->expectException(NotCallableException::class);
         $resolver = new CallableResolver(new ArrayContainer);
-        $resolver->resolve(array(new stdClass, 'test'));
+        $resolver->resolve([new stdClass, 'test']);
     }
 }
 

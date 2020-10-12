@@ -1,27 +1,19 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Invoker\Test\Mock;
 
 /**
  * Mock a callable and spies being called.
- *
- * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
 class CallableSpy
 {
-    /**
-     * @var callable|null
-     */
+    /** @var callable|null */
     private $callable;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     private $callCount = 0;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     private $parameters = [];
 
     public static function mock($callable)

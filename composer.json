@@ -21,6 +21,7 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^9.0",
-        "athletic/athletic": "~0.1.8"
+        "athletic/athletic": "~0.1.8",
+        "mnapoli/hard-mode": "~0.3.0"
     }
 }

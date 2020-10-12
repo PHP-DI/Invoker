@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Invoker\Test\ParameterResolver\Container;
 
@@ -8,14 +8,10 @@ use PHPUnit\Framework\TestCase;
 
 class ParameterNameContainerResolverTest extends TestCase
 {
-    /**
-     * @var ParameterNameContainerResolver
-     */
+    /** @var ParameterNameContainerResolver */
     private $resolver;
 
-    /**
-     * @var ArrayContainer
-     */
+    /** @var ArrayContainer */
     private $container;
 
     public function setUp(): void
@@ -29,12 +25,13 @@ class ParameterNameContainerResolverTest extends TestCase
      */
     public function should_resolve_parameter_with_parameter_name_from_container()
     {
-        $callable = function ($foo) {};
+        $callable = function ($foo) {
+        };
         $reflection = new \ReflectionFunction($callable);
 
         $this->container->set('foo', 'bar');
 
-        $parameters = $this->resolver->getParameters($reflection, array(), array());
+        $parameters = $this->resolver->getParameters($reflection, [], []);
 
         $this->assertCount(1, $parameters);
         $this->assertSame('bar', $parameters[0]);
@@ -45,10 +42,11 @@ class ParameterNameContainerResolverTest extends TestCase
      */
     public function should_skip_parameter_if_container_cannot_provide_parameter()
     {
-        $callable = function ($foo) {};
+        $callable = function ($foo) {
+        };
         $reflection = new \ReflectionFunction($callable);
 
-        $parameters = $this->resolver->getParameters($reflection, array(), array());
+        $parameters = $this->resolver->getParameters($reflection, [], []);
 
         $this->assertCount(0, $parameters);
     }
@@ -58,13 +56,14 @@ class ParameterNameContainerResolverTest extends TestCase
      */
     public function should_skip_parameter_if_already_resolved()
     {
-        $callable = function ($foo) {};
+        $callable = function ($foo) {
+        };
         $reflection = new \ReflectionFunction($callable);
 
         $this->container->set('foo', 'bar');
 
-        $resolvedParameters = array('first param value');
-        $parameters = $this->resolver->getParameters($reflection, array(), $resolvedParameters);
+        $resolvedParameters = ['first param value'];
+        $parameters = $this->resolver->getParameters($reflection, [], $resolvedParameters);
 
         $this->assertSame($resolvedParameters, $parameters);
     }
