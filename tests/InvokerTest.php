@@ -182,6 +182,30 @@ class InvokerTest extends TestCase
     /**
      * @test
      */
+    public function should_invoke_callable_with_null_for_nullable_parameters()
+    {
+        $result = $this->invoker->call(function (?string $baz = null) {
+            return $baz;
+        });
+
+        $this->assertNull($result);
+    }
+
+    /**
+     * @test
+     */
+    public function should_invoke_callable_with_null_for_non_optional_nullable_parameters()
+    {
+        $result = $this->invoker->call(function (?string $baz) {
+            return $baz;
+        });
+
+        $this->assertNull($result);
+    }
+
+    /**
+     * @test
+     */
     public function should_do_dependency_injection_with_typehint_container_resolver()
     {
         $resolver = new TypeHintContainerResolver($this->container);
