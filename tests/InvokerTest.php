@@ -406,6 +406,18 @@ class InvokerTest extends TestCase
         ]);
     }
 
+    /**
+     * @test
+     */
+    public function should_invoke_callable_with_variadic_parameter()
+    {
+        $result = $this->invoker->call(function (...$param) {
+            return $param;
+        }, [1, 2, 3]);
+
+        $this->assertEquals([1, 2, 3], $result);
+    }
+
     private function assertWasCalled(CallableSpy $callableSpy)
     {
         $this->assertEquals(1, $callableSpy->getCallCount(), 'The callable should be called once');
