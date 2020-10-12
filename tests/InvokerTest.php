@@ -192,6 +192,7 @@ class InvokerTest extends TestCase
     }
 
     /**
+     * @see https://github.com/PHP-DI/Slim-Bridge/issues/37
      * @test
      */
     public function should_invoke_callable_with_null_for_non_optional_nullable_parameters()
@@ -201,6 +202,21 @@ class InvokerTest extends TestCase
         });
 
         $this->assertNull($result);
+    }
+
+    /**
+     * @see https://github.com/PHP-DI/PHP-DI/issues/562
+     * @test
+     */
+    public function should_invoke_callable_with_optional_parameter_before_required_parameter()
+    {
+        $result = $this->invoker->call(function ($baz = 'abc', $foo) {
+            return [$baz, $foo];
+        }, [
+            'foo' => 'bar',
+        ]);
+
+        $this->assertSame(['abc', 'bar'], $result);
     }
 
     /**
