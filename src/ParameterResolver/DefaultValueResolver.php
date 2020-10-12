@@ -24,7 +24,7 @@ class DefaultValueResolver implements ParameterResolver
 
         foreach ($parameters as $index => $parameter) {
             \assert($parameter instanceof \ReflectionParameter);
-            if ($parameter->isOptional()) {
+            if ($parameter->isDefaultValueAvailable()) {
                 try {
                     $resolvedParameters[$index] = $parameter->getDefaultValue();
                 } catch (ReflectionException $e) {
