@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Invoker\Test\ParameterResolver\Container;
 
@@ -10,14 +10,10 @@ class TypeHintContainerResolverTest extends TestCase
 {
     private const FIXTURE = TypeHintContainerResolverFixture::class;
 
-    /**
-     * @var TypeHintContainerResolver
-     */
+    /** @var TypeHintContainerResolver */
     private $resolver;
 
-    /**
-     * @var ArrayContainer
-     */
+    /** @var ArrayContainer */
     private $container;
 
     public function setUp(): void
@@ -31,13 +27,14 @@ class TypeHintContainerResolverTest extends TestCase
      */
     public function should_resolve_parameter_with_typehint_and_container()
     {
-        $callable = function (TypeHintContainerResolverFixture $foo) {};
+        $callable = function (TypeHintContainerResolverFixture $foo) {
+        };
         $reflection = new \ReflectionFunction($callable);
 
         $fixture = new TypeHintContainerResolverFixture;
         $this->container->set(self::FIXTURE, $fixture);
 
-        $parameters = $this->resolver->getParameters($reflection, array(), array());
+        $parameters = $this->resolver->getParameters($reflection, [], []);
 
         $this->assertCount(1, $parameters);
         $this->assertSame($fixture, $parameters[0]);
@@ -48,10 +45,11 @@ class TypeHintContainerResolverTest extends TestCase
      */
     public function should_skip_parameter_if_container_cannot_provide_typehint()
     {
-        $callable = function (TypeHintContainerResolverFixture $foo) {};
+        $callable = function (TypeHintContainerResolverFixture $foo) {
+        };
         $reflection = new \ReflectionFunction($callable);
 
-        $parameters = $this->resolver->getParameters($reflection, array(), array());
+        $parameters = $this->resolver->getParameters($reflection, [], []);
 
         $this->assertCount(0, $parameters);
     }
@@ -61,13 +59,14 @@ class TypeHintContainerResolverTest extends TestCase
      */
     public function should_skip_parameter_if_already_resolved()
     {
-        $callable = function (TypeHintContainerResolverFixture $foo) {};
+        $callable = function (TypeHintContainerResolverFixture $foo) {
+        };
         $reflection = new \ReflectionFunction($callable);
 
         $this->container->set(self::FIXTURE, new TypeHintContainerResolverFixture);
 
-        $resolvedParameters = array('first param value');
-        $parameters = $this->resolver->getParameters($reflection, array(), $resolvedParameters);
+        $resolvedParameters = ['first param value'];
+        $parameters = $this->resolver->getParameters($reflection, [], $resolvedParameters);
 
         $this->assertSame($resolvedParameters, $parameters);
     }

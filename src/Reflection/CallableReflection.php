@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Invoker\Reflection;
 
@@ -10,19 +10,13 @@ use ReflectionMethod;
 
 /**
  * Create a reflection object from a callable.
- *
- * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
 class CallableReflection
 {
     /**
-     * @param callable $callable
-     *
      * @throws NotCallableException|ReflectionException
-     *
-     * TODO Use the `callable` type-hint once support for PHP 5.4 and up.
      */
-    public static function create($callable): ReflectionFunctionAbstract
+    public static function create(callable $callable): ReflectionFunctionAbstract
     {
         // Closure
         if ($callable instanceof \Closure) {

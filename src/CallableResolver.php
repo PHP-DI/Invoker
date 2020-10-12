@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Invoker;
 
@@ -11,14 +11,10 @@ use ReflectionMethod;
 
 /**
  * Resolves a callable from a container.
- *
- * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
 class CallableResolver
 {
-    /**
-     * @var ContainerInterface
-     */
+    /** @var ContainerInterface */
     private $container;
 
     public function __construct(ContainerInterface $container)
@@ -30,9 +26,7 @@ class CallableResolver
      * Resolve the given callable into a real PHP callable.
      *
      * @param callable|string|array $callable
-     *
      * @return callable Real PHP callable.
-     *
      * @throws NotCallableException|ReflectionException
      */
     public function resolve($callable): callable
@@ -109,7 +103,6 @@ class CallableResolver
      * Check if the callable represents a static call to a non-static method.
      *
      * @param mixed $callable
-     *
      * @throws ReflectionException
      */
     private function isStaticCallToNonStaticMethod($callable): bool

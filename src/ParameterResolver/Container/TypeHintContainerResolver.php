@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Invoker\ParameterResolver\Container;
 
@@ -9,14 +9,10 @@ use ReflectionNamedType;
 
 /**
  * Inject entries from a DI container using the type-hints.
- *
- * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
 class TypeHintContainerResolver implements ParameterResolver
 {
-    /**
-     * @var ContainerInterface
-     */
+    /** @var ContainerInterface */
     private $container;
 
     /**
@@ -31,7 +27,7 @@ class TypeHintContainerResolver implements ParameterResolver
         ReflectionFunctionAbstract $reflection,
         array $providedParameters,
         array $resolvedParameters
-    ) {
+    ): array {
         $parameters = $reflection->getParameters();
 
         // Skip parameters already resolved
@@ -41,7 +37,7 @@ class TypeHintContainerResolver implements ParameterResolver
 
         foreach ($parameters as $index => $parameter) {
             $parameterType = $parameter->getType();
-            if (!$parameterType) {
+            if (! $parameterType) {
                 // No type
                 continue;
             }
@@ -49,7 +45,7 @@ class TypeHintContainerResolver implements ParameterResolver
                 // Primitive types are not supported
                 continue;
             }
-            if (!$parameterType instanceof ReflectionNamedType) {
+            if (! $parameterType instanceof ReflectionNamedType) {
                 // Union types are not supported
                 continue;
             }
