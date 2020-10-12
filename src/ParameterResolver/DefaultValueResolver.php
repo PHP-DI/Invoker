@@ -30,6 +30,11 @@ class DefaultValueResolver implements ParameterResolver
                 } catch (ReflectionException $e) {
                     // Can't get default values from PHP internal classes and functions
                 }
+            } else {
+                $parameterType = $parameter->getType();
+                if ($parameterType && $parameterType->allowsNull()) {
+                    $resolvedParameters[$index] = null;
+                }
             }
         }
 
