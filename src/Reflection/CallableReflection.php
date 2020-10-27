@@ -2,6 +2,7 @@
 
 namespace Invoker\Reflection;
 
+use Closure;
 use Invoker\Exception\NotCallableException;
 use ReflectionException;
 use ReflectionFunction;
@@ -10,6 +11,8 @@ use ReflectionMethod;
 
 /**
  * Create a reflection object from a callable.
+ *
+ * @internal
  */
 class CallableReflection
 {
@@ -19,7 +22,7 @@ class CallableReflection
     public static function create(callable $callable): ReflectionFunctionAbstract
     {
         // Closure
-        if ($callable instanceof \Closure) {
+        if ($callable instanceof Closure) {
             return new ReflectionFunction($callable);
         }
 
@@ -36,11 +39,6 @@ class CallableReflection
 
         // Callable object (i.e. implementing __invoke())
         if (is_object($callable) && method_exists($callable, '__invoke')) {
-            return new ReflectionMethod($callable, '__invoke');
-        }
-
-        // Callable class (i.e. implementing __invoke())
-        if (is_string($callable) && class_exists($callable) && method_exists($callable, '__invoke')) {
             return new ReflectionMethod($callable, '__invoke');
         }
 
