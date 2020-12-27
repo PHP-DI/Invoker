@@ -22,16 +22,20 @@ class TypeHintResolverTest extends TestCase
      */
     public function should_resolve_parameter_with_typehint()
     {
-        $callable = function (TypeHintResolverFixture $foo) {
+        $callable = function (TypeHintResolverFixture $foo, self $bar) {
         };
         $reflection = new \ReflectionFunction($callable);
 
         $fixture = new TypeHintResolverFixture;
 
-        $parameters = $this->resolver->getParameters($reflection, [self::FIXTURE => $fixture], []);
-
-        $this->assertCount(1, $parameters);
+        $parameters = $this->resolver->getParameters(
+            $reflection,
+            [self::FIXTURE => $fixture, self::class => $this],
+            []
+        );
+        $this->assertCount(2, $parameters);
         $this->assertSame($fixture, $parameters[0]);
+        $this->assertSame($this, $parameters[1]);
     }
 
     /**
@@ -64,6 +68,7 @@ class TypeHintResolverTest extends TestCase
 
         $this->assertSame($resolvedParameters, $parameters);
     }
+
 }
 
 class TypeHintResolverFixture

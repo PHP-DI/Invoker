@@ -27,17 +27,19 @@ class TypeHintContainerResolverTest extends TestCase
      */
     public function should_resolve_parameter_with_typehint_and_container()
     {
-        $callable = function (TypeHintContainerResolverFixture $foo) {
+        $callable = function (TypeHintContainerResolverFixture $foo, self $bar) {
         };
         $reflection = new \ReflectionFunction($callable);
 
         $fixture = new TypeHintContainerResolverFixture;
         $this->container->set(self::FIXTURE, $fixture);
+        $this->container->set(self::class, $this);
 
         $parameters = $this->resolver->getParameters($reflection, [], []);
 
-        $this->assertCount(1, $parameters);
+        $this->assertCount(2, $parameters);
         $this->assertSame($fixture, $parameters[0]);
+        $this->assertSame($this, $parameters[1]);
     }
 
     /**
