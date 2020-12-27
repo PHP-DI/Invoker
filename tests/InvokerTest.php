@@ -451,11 +451,11 @@ class InvokerTest extends TestCase
      */
     public function should_invoke_callable_with_variadic_parameter()
     {
-        $result = $this->invoker->call(function (...$param) {
+        $callable = function (...$param) {
             return $param;
-        }, [1, 2, 3]);
-
-        $this->assertEquals([1, 2, 3], $result);
+        };
+        $this->assertEquals([1, 2, 3], $this->invoker->call($callable, [1, 2, 3]), 'non-empty variadic');
+        $this->assertEquals([], $this->invoker->call($callable, []), 'empty variadic');
     }
 
     private function assertWasCalled(CallableSpy $callableSpy)
