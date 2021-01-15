@@ -10,16 +10,18 @@ use ReflectionFunctionAbstract;
 use ReflectionMethod;
 
 /**
- * Create a reflection object from a callable.
+ * Create a reflection object from a callable or a callable-like.
  *
- * @internal
+ * @api
  */
 class CallableReflection
 {
     /**
+     * @param callable|array|string $callable Can be a callable or a callable-like.
+     *
      * @throws NotCallableException|ReflectionException
      */
-    public static function create(callable $callable): ReflectionFunctionAbstract
+    public static function create($callable): ReflectionFunctionAbstract
     {
         // Closure
         if ($callable instanceof Closure) {
