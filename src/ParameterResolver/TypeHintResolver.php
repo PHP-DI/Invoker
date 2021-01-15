@@ -40,6 +40,9 @@ class TypeHintResolver implements ParameterResolver
             }
 
             $parameterClass = $parameterType->getName();
+            if ($parameterClass === 'self') {
+                $parameterClass = $parameter->getDeclaringClass()->getName();
+            }
 
             if (array_key_exists($parameterClass, $providedParameters)) {
                 $resolvedParameters[$index] = $providedParameters[$parameterClass];

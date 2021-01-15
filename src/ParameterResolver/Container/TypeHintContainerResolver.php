@@ -51,6 +51,9 @@ class TypeHintContainerResolver implements ParameterResolver
             }
 
             $parameterClass = $parameterType->getName();
+            if ($parameterClass === 'self') {
+                $parameterClass = $parameter->getDeclaringClass()->getName();
+            }
 
             if ($this->container->has($parameterClass)) {
                 $resolvedParameters[$index] = $this->container->get($parameterClass);
