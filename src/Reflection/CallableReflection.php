@@ -12,13 +12,12 @@ use ReflectionMethod;
 /**
  * Create a reflection object from a callable or a callable-like.
  *
- * @api
+ * @internal
  */
 class CallableReflection
 {
     /**
      * @param callable|array|string $callable Can be a callable or a callable-like.
-     *
      * @throws NotCallableException|ReflectionException
      */
     public static function create($callable): ReflectionFunctionAbstract
