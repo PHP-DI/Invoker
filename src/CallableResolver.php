@@ -109,6 +109,11 @@ class CallableResolver
     {
         if (is_array($callable) && is_string($callable[0])) {
             [$class, $method] = $callable;
+
+            if (! method_exists($class, $method)) {
+                return false;
+            }
+
             $reflection = new ReflectionMethod($class, $method);
 
             return ! $reflection->isStatic();
