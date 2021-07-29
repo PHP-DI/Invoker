@@ -68,7 +68,7 @@ class InvokerTest extends TestCase
      */
     public function cannot_invoke_magic_method()
     {
-        $this->expectExceptionMessage('Invoker\Test\InvokerTestMagicMethodFixture::foo() is not a callable. A __call() method exists but magic methods are not supported.');
+        $this->expectExceptionMessage('Invoker\Test\InvokerTestMagicMethodFixture::foo() is not a callable. A __call() or __callStatic() method exists but magic methods are not supported.');
         $this->expectException(NotCallableException::class);
         $this->invoker->call([new InvokerTestMagicMethodFixture, 'foo']);
     }
