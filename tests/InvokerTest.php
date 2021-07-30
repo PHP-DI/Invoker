@@ -76,6 +76,16 @@ class InvokerTest extends TestCase
     /**
      * @test
      */
+    public function cannot_invoke_static_magic_method()
+    {
+        $this->expectExceptionMessage('Invoker\Test\InvokerTestStaticMagicMethodFixture::foo() is not a callable. A __call() or __callStatic() method exists but magic methods are not supported.');
+        $this->expectException(NotCallableException::class);
+        $this->invoker->call([InvokerTestStaticMagicMethodFixture::class, 'foo']);
+    }
+
+    /**
+     * @test
+     */
     public function should_invoke_static_method()
     {
         $result = $this->invoker->call([InvokerTestStaticFixture::class, 'foo']);
@@ -503,3 +513,18 @@ class InvokerTestMagicMethodFixture
         throw new Exception('Unknown method');
     }
 }
+
+class InvokerTestStaticMagicMethodFixture
+{
+    /** @var bool */
+    public static $wasCalled = false;
+    public static function __callStatic(string $name, array $args): string
+    {
+        if ($name === 'foo') {
+            static::$wasCalled = true;
+            return 'bar';
+        }
+        throw new Exception('Unknown method');
+    }
+}
+
