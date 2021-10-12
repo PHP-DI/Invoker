@@ -6,7 +6,11 @@ use Invoker\CallableResolver;
 use Invoker\Exception\NotCallableException;
 use Invoker\Test\Mock\ArrayContainer;
 use Invoker\Test\Mock\CallableSpy;
+use Invoker\Test\Mock\Psr_15\Middleware;
+use Invoker\Test\Mock\Psr_15\Request;
+use Invoker\Test\Mock\Psr_15\RequestHandler;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\ResponseInterface;
 use stdClass;
 
 class CallableResolverTest extends TestCase
@@ -121,6 +125,20 @@ class CallableResolverTest extends TestCase
 
         $result();
         $this->assertTrue($fixture->wasCalled);
+    }
+
+    /**
+     * @test
+     */
+    public function resolves_psr_15_middleware()
+    {
+        $this->container->set(Middleware::class, new Middleware());
+
+        $result = $this->resolver->resolve(Middleware::class);
+
+        $result = $result(new Request(), new RequestHandler());
+
+        $this->assertInstanceOf(ResponseInterface::class, $result);
     }
 
     /**

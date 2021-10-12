@@ -6,6 +6,7 @@ use Closure;
 use Invoker\Exception\NotCallableException;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use ReflectionException;
 use ReflectionMethod;
 
@@ -38,6 +39,9 @@ class CallableResolver
         $callable = $this->resolveFromContainer($callable);
 
         if (! is_callable($callable)) {
+            if ($callable instanceof MiddlewareInterface) {
+                return fn ($request, $next) => $callable->process($request, $next);
+            }
             throw NotCallableException::fromInvalidCallable($callable, true);
         }
 
