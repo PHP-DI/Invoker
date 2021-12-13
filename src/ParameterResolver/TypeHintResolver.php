@@ -30,12 +30,12 @@ class TypeHintResolver implements ParameterResolver
                 // No type
                 continue;
             }
-            if ($parameterType->isBuiltin()) {
-                // Primitive types are not supported
-                continue;
-            }
             if (! $parameterType instanceof ReflectionNamedType) {
                 // Union types are not supported
+                continue;
+            }
+            if ($parameterType->isBuiltin()) {
+                // Primitive types are not supported
                 continue;
             }
 
