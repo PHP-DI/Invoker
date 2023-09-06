@@ -4,6 +4,7 @@ tests/ export-ignore
 .gitignore export-ignore
 .github export-ignore
 phpunit.xml.dist export-ignore
+.phpcs.xml.dist export-ignore
 
 # Auto detect text files and perform LF normalization
 * text=auto
