@@ -2,9 +2,8 @@ name: CI
 
 on:
     push:
-        branches: ['master']
-    pull_request:
         branches: ['*']
+    pull_request:
     schedule:
         -   cron: '0 0 * * *'
 
@@ -15,23 +14,23 @@ jobs:
         runs-on: ubuntu-latest
         timeout-minutes: 15
         strategy:
+            fail-fast: false
             matrix:
-                php: [ '7.3', '7.4', '8.0' ]
+                php: [ '7.3', '7.4', '8.0', '8.1', '8.2', '8.3' ]
                 dependency-version: [ '' ]
                 include:
                     -   php: '7.3'
                         dependency-version: '--prefer-lowest'
         steps:
             -   name: Checkout
-                uses: actions/checkout@v2
+                uses: actions/checkout@v4
             -   name: Setup PHP
                 uses: shivammathur/setup-php@v2
                 with:
                     php-version: ${{ matrix.php }}
-                    tools: composer:v2
                     coverage: none
             -   name: Cache Composer dependencies
-                uses: actions/cache@v2
+                uses: actions/cache@v3
                 with:
                     path: ~/.composer/cache
                     key: php-${{ matrix.php }}-composer-locked-${{ hashFiles('composer.lock') }}
@@ -46,15 +45,15 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             -   name: Checkout
-                uses: actions/checkout@v2
+                uses: actions/checkout@v4
             -   name: Setup PHP
                 uses: shivammathur/setup-php@v2
                 with:
                     php-version: 7.4
-                    tools: composer:v2, cs2pr
+                    tools: cs2pr
                     coverage: none
             -   name: Cache Composer dependencies
-                uses: actions/cache@v2
+                uses: actions/cache@v3
                 with:
                     path: ~/.composer/cache
                     key: php-composer-locked-${{ hashFiles('composer.lock') }}
