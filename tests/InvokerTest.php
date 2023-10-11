@@ -216,10 +216,16 @@ class InvokerTest extends TestCase
 
     /**
      * @see https://github.com/PHP-DI/PHP-DI/issues/562
+     * @deprecated
      * @test
      */
     public function should_invoke_callable_with_optional_parameter_before_required_parameter()
     {
+        if (version_compare(PHP_VERSION, '8.1') >= 0) {
+            /** @see https://www.php.net/manual/en/migration81.incompatible.php#migration81.incompatible.core.optional-before-required */
+            $this->markTestSkipped('An optional parameter specified before required parameters is now always treated as required.');
+        }
+
         $result = $this->invoker->call(function ($baz = 'abc', $foo) {
             return [$baz, $foo];
         }, [
