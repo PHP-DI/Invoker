@@ -57,7 +57,8 @@ class Invoker implements InvokerInterface
 
         $args = $this->parameterResolver->getParameters($callableReflection, $parameters, []);
 
-        // Sort by array key because call_user_func_array ignores numeric keys
+        // Sort by array keys is needed since the resolved arguments returned by the resolver are indexed by numeric keys
+        // that correspond to the parameters of the callable, but may be out of order.
         ksort($args);
 
         // Check all parameters are resolved
@@ -71,7 +72,7 @@ class Invoker implements InvokerInterface
             ));
         }
 
-        return call_user_func_array($callable, $args);
+        return $callable(...$args);
     }
 
     /**
