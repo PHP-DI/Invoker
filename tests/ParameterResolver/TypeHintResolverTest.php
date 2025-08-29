@@ -20,6 +20,7 @@ class TypeHintResolverTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function should_resolve_parameter_with_typehint()
     {
         $callable = function (TypeHintResolverFixture $foo, self $bar) {
@@ -41,6 +42,7 @@ class TypeHintResolverTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function should_skip_parameter_if_provided_parameters_do_not_contain_typehint()
     {
         $callable = function (TypeHintResolverFixture $foo) {
@@ -55,6 +57,7 @@ class TypeHintResolverTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function should_skip_parameter_if_already_resolved()
     {
         $callable = function (TypeHintResolverFixture $foo) {

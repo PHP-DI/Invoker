@@ -23,6 +23,7 @@ class ParameterNameContainerResolverTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function should_resolve_parameter_with_parameter_name_from_container()
     {
         $callable = function ($foo) {
@@ -40,6 +41,7 @@ class ParameterNameContainerResolverTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function should_skip_parameter_if_container_cannot_provide_parameter()
     {
         $callable = function ($foo) {
@@ -54,6 +56,7 @@ class ParameterNameContainerResolverTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function should_skip_parameter_if_already_resolved()
     {
         $callable = function ($foo) {
