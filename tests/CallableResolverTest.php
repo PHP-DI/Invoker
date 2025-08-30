@@ -27,6 +27,7 @@ class CallableResolverTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function resolves_function()
     {
         $result = $this->resolver->resolve('strlen');
@@ -37,6 +38,7 @@ class CallableResolverTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function resolves_namespaced_function()
     {
         $result = $this->resolver->resolve(__NAMESPACE__ . '\foo');
@@ -47,6 +49,7 @@ class CallableResolverTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function resolves_callable_from_container()
     {
         $callable = function () {
@@ -59,6 +62,7 @@ class CallableResolverTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function resolves_invokable_class()
     {
         $callable = new CallableSpy;
@@ -70,6 +74,7 @@ class CallableResolverTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function resolve_array_method_call()
     {
         $fixture = new InvokerTestFixture;
@@ -84,6 +89,7 @@ class CallableResolverTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function resolve_string_method_call()
     {
         $fixture = new InvokerTestFixture;
@@ -98,6 +104,7 @@ class CallableResolverTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function resolves_array_method_call_with_service()
     {
         $fixture = new InvokerTestFixture;
@@ -112,6 +119,7 @@ class CallableResolverTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function resolves_string_method_call_with_service()
     {
         $fixture = new InvokerTestFixture;
@@ -126,6 +134,7 @@ class CallableResolverTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function throws_resolving_non_callable_from_container()
     {
         $this->expectExceptionMessage("'foo' is neither a callable nor a valid container entry");
@@ -137,6 +146,7 @@ class CallableResolverTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function handles_objects_correctly_in_exception_message()
     {
         $this->expectExceptionMessage('Instance of stdClass is not a callable');
@@ -148,6 +158,7 @@ class CallableResolverTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function handles_method_calls_correctly_in_exception_message()
     {
         $this->expectExceptionMessage('stdClass::test() is not a callable');

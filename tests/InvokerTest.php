@@ -32,6 +32,7 @@ class InvokerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function should_invoke_closure()
     {
         $callable = new CallableSpy;
@@ -44,6 +45,7 @@ class InvokerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function should_invoke_method()
     {
         $fixture = new InvokerTestFixture;
@@ -56,6 +58,7 @@ class InvokerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function cannot_invoke_unknown_method()
     {
         $this->expectExceptionMessage('Invoker\Test\InvokerTestFixture::bar() is not a callable.');
@@ -66,6 +69,7 @@ class InvokerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function cannot_invoke_magic_method()
     {
         $this->expectExceptionMessage('Invoker\Test\InvokerTestMagicMethodFixture::foo() is not a callable. A __call() or __callStatic() method exists but magic methods are not supported.');
@@ -76,6 +80,7 @@ class InvokerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function cannot_invoke_static_magic_method()
     {
         $this->expectExceptionMessage('Invoker\Test\InvokerTestStaticMagicMethodFixture::foo() is not a callable. A __call() or __callStatic() method exists but magic methods are not supported.');
@@ -86,6 +91,7 @@ class InvokerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function should_invoke_static_method()
     {
         $result = $this->invoker->call([InvokerTestStaticFixture::class, 'foo']);
@@ -96,6 +102,7 @@ class InvokerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function should_invoke_static_method_with_scope_resolution_syntax()
     {
         $result = $this->invoker->call('Invoker\Test\InvokerTestStaticFixture::foo');
@@ -106,6 +113,7 @@ class InvokerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function should_return_the_callable_return_value()
     {
         $result = $this->invoker->call(function () {
@@ -118,6 +126,7 @@ class InvokerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function should_throw_if_no_value_for_parameter()
     {
         $this->expectExceptionMessage('Unable to invoke the callable because no value was given for parameter 2 ($bar)');
@@ -132,6 +141,7 @@ class InvokerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function should_throw_if_no_value_for_parameter_even_with_trailing_optional_parameters()
     {
         $this->expectExceptionMessage('Unable to invoke the callable because no value was given for parameter 2 ($bar)');
@@ -146,6 +156,7 @@ class InvokerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function should_invoke_callable_with_parameters_indexed_by_position()
     {
         $callable = new CallableSpy;
@@ -158,6 +169,7 @@ class InvokerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function should_invoke_callable_with_parameters_indexed_by_name()
     {
         $parameters = [
@@ -175,6 +187,7 @@ class InvokerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function should_invoke_callable_with_default_value_for_undefined_parameters()
     {
         $parameters = [
@@ -192,6 +205,7 @@ class InvokerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function should_invoke_callable_with_null_for_nullable_parameters()
     {
         $result = $this->invoker->call(function (?string $baz = null) {
@@ -238,6 +252,7 @@ class InvokerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function should_do_dependency_injection_with_typehint_container_resolver()
     {
         $resolver = new TypeHintContainerResolver($this->container);
@@ -256,6 +271,7 @@ class InvokerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function should_do_dependency_injection_with_parameter_name_container_resolver()
     {
         $resolver = new ParameterNameContainerResolver($this->container);
@@ -274,6 +290,7 @@ class InvokerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function should_resolve_callable_from_container()
     {
         $callable = new CallableSpy;
@@ -287,6 +304,7 @@ class InvokerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function should_resolve_array_callable_from_container()
     {
         $fixture = new InvokerTestFixture;
@@ -301,6 +319,7 @@ class InvokerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function should_resolve_callable_from_container_with_scope_resolution_syntax()
     {
         $fixture = new InvokerTestFixture;
@@ -315,6 +334,7 @@ class InvokerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function should_resolve_array_callable_from_container_with_class_name()
     {
         $fixture = new InvokerTestFixture;
@@ -329,6 +349,7 @@ class InvokerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function should_resolve_callable_from_container_with_class_name_in_scope_resolution_syntax()
     {
         $fixture = new InvokerTestFixture;
@@ -366,6 +387,7 @@ class InvokerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function should_not_invoke_statically_a_non_static_method()
     {
         $this->expectExceptionMessage('Cannot call foo() on Invoker\Test\InvokerTestFixture because it is not a class nor a valid container entry');
@@ -376,6 +398,7 @@ class InvokerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function should_throw_if_calling_non_callable_without_container()
     {
         $this->expectExceptionMessage("'foo' is not a callable");
@@ -387,6 +410,7 @@ class InvokerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function should_throw_if_calling_non_callable_without_container_2()
     {
         $this->expectExceptionMessage('NULL is not a callable');
@@ -398,6 +422,7 @@ class InvokerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function should_throw_if_calling_non_callable_with_container()
     {
         $this->expectExceptionMessage("'foo' is neither a callable nor a valid container entry");
@@ -409,6 +434,7 @@ class InvokerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function should_throw_if_calling_non_callable_object()
     {
         $this->expectExceptionMessage('Instance of stdClass is not a callable');
@@ -420,6 +446,7 @@ class InvokerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function should_invoke_static_method_rather_than_resolving_entry_from_container()
     {
         // Register a non-callable so that test fails if we try to invoke that
@@ -434,6 +461,7 @@ class InvokerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function should_throw_if_no_value_for_optional_parameter_1()
     {
         $this->expectExceptionMessage('Unable to invoke the callable because no value was given for parameter 2 ($bar)');
@@ -449,6 +477,7 @@ class InvokerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function should_throw_if_no_value_for_optional_parameter_2()
     {
         $this->expectExceptionMessage('Unable to invoke the callable because no value was given for parameter 2 ($bar)');
@@ -465,6 +494,7 @@ class InvokerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function should_invoke_callable_with_variadic_parameter()
     {
         $callable = function (...$param) {
@@ -533,4 +563,3 @@ class InvokerTestStaticMagicMethodFixture
         throw new Exception('Unknown method');
     }
 }
-
