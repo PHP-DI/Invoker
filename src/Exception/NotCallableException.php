@@ -23,9 +23,9 @@ class NotCallableException extends InvocationException
 
             $message = sprintf('%s::%s() is not a callable.%s', $class, $value[1], $extra);
         } elseif ($containerEntry) {
-            $message = var_export($value, true) . ' is neither a callable nor a valid container entry';
+            $message = print_r($value, true) . ' is neither a callable nor a valid container entry';
         } else {
-            $message = var_export($value, true) . ' is not a callable';
+            $message = print_r($value, true) . ' is not a callable';
         }
 
         return new self($message);
