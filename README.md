@@ -127,6 +127,23 @@ Dependency injection in parameters is supported but needs to be configured with 
 
 Additionally, callables can also be resolved from your container. Read on or jump to [*Resolving callables from a container*](#resolving-callables-from-a-container) if you are impatient.
 
+### Optional and required parameters
+
+Invoker follows PHP's native default-parameter behavior. Since [PHP 8.1](https://www.php.net/manual/en/migration81.incompatible.php#migration81.incompatible.core.optional-before-required), a parameter with a default value declared before a required parameter is itself required, even when using named parameters.
+
+For example, in `function ($baz = 'abc', $foo)`, supplying only `foo` does not use the default for `baz`: Invoker throws `NotEnoughParametersException` for the missing `baz` value. Declare required parameters before optional ones to make their defaults available:
+
+```php
+$result = $invoker->call(function ($foo, $baz = 'abc') {
+    return [$baz, $foo];
+}, [
+    'foo' => 'bar'
+]);
+// $result is ['abc', 'bar']
+```
+
+If you cannot change the callable's signature, provide values for both parameters instead. Invoker does not restore the older PHP behavior.
+
 ### Parameter resolvers
 
 Extending the behavior of the `Invoker` is easy and is done by implementing a [`ParameterResolver`](https://github.com/PHP-DI/Invoker/blob/master/src/ParameterResolver/ParameterResolver.php).
